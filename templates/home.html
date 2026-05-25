@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Fake Job Advertisements</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="http://www.urbanui.com/" />
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% include 'header.html' %}
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <div class="theme-setting-wrapper">
+        <div id="settings-trigger"><i class="fas fa-fill-drip"></i></div>
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close fa fa-times"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles primary"></div>
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+      </div>
+      {% include 'sidebar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">
+              Dashboard {{ username }}!
+            </h3>
+          </div>
+          <div class="row grid-margin">
+            <div class="col-12">
+              <div class="card card-statistics">
+                <div class="card-body">
+                  <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                      <div class="statistics-item">
+                        <p>
+                          <i class="icon-sm fa fa-user mr-2"></i>
+                          Total Jobs Tested
+                        </p>
+                        <h2>{{ total_jobs }}</h2>
+                      </div>
+                      <div class="statistics-item">
+                        <p>
+                          <i class="icon-sm fas fa-hourglass-half mr-2"></i>
+                          Fake Jobs
+                        </p>
+                        <h2>{{ fake_count }}</h2>
+                      </div>
+                      <div class="statistics-item">
+                        <p>
+                          <i class="icon-sm fas fa-cloud-download-alt mr-2"></i>
+                          Legit Jobs
+                        </p>
+                        <h2>{{ legit_count }}</h2>
+                      </div>
+                      <div class="statistics-item">
+                        <p>
+                          <i class="icon-sm fas fa-exclamation-triangle mr-2"></i>
+                          Invalid Jobs
+                        </p>
+                        <h2>{{ invalid_count }}</h2>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="page-title">Classification Results (Fake vs Legit vs Invalid)</h3>
+                  <canvas id="myChart"></canvas>
+                  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                  <script>
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ labels|tojson|safe }},
+                            datasets: [{
+                                label: 'Prediction Summary',
+                                data: {{ counts|tojson|safe }},
+                                backgroundColor: ['red', 'orange', 'green'],
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                  </script>
+                  <div id="orders-chart-legend" class="orders-chart-legend"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2026. All rights reserved.</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="far fa-heart text-danger"></i></span>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>

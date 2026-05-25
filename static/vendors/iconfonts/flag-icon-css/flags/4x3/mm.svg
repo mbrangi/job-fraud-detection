@@ -1,0 +1,22 @@
+lname = %s WHERE id = %s",
+                           (username, fullname, user_id))
+            mysql.connection.commit()
+            flash("User updated successfully.", "success")
+            return redirect('/admin')
+    except Exception as e:
+        flash(f"Error editing user: {str(e)}", "danger")
+    finally:
+        cursor.close()
+    return render_template('edit_user.html', user=user)
+
+@app.route('/delete_user/<int:user_id>')
+def delete_user(user_id):
+    if 'user_id' not in session or not is_admin():
+        flash("Access denied. Admin only.", "danger")
+        return redirect('/dashboard')
+    if user_id == session['user_id']:
+        flash("Cannot delete your own account.", "danger")
+        return redirect('/admin')
+    cursor = mysql.connection.cursor()
+    try:
+        cursor.execute("DELETE FROM job_ads WHERE 

@@ -1,0 +1,34 @@
+                     Upload pdf file
+                                </h4>
+                                <input
+                                  type="file"
+                                  class="dropify"
+                                  name="pdf"
+                                  accept=".pdf"
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div align="center" class="form-control">
+                          <button
+                            type="submit"
+                            class="btn btn-outline-primary btn-fw"
+                          >
+                            Get Predictions
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+
+                    {% if pred and reason %}
+                    <!-- Prediction Output -->
+                    <div class="mt-4">
+                      <h4>Prediction Result:</h4>
+                      <div class="alert alert-info">
+                        <strong>Status:</strong> {{ pred.upper() }}<br />
+                        <strong>Reason:</strong> {{ reason }}
+                      </div>
+                    </div>
+                

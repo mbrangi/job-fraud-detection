@@ -1,0 +1,45 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+ENV/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+
+# Dataset CSV files (too large for GitHub)
+*.csv
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+*.ipynb
+
+# VS Code settings
+.vscode/
+
+# PyCharm settings
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Database dump (optional - remove this line if you want to upload it)
+# fraud_detection.sql

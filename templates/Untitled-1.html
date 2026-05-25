@@ -1,0 +1,18 @@
+<td>
+  <span
+    class="alert alert-{{ 'danger' if record.result == 'fake' else 'success' }}"
+  >
+    {{ record.result.upper() }}
+  </span>
+</td>
+
+<a
+  href="{{ url_for('static', filename='uploads/' + record[1]) }}"
+  class="badge badge-success badge-pill"
+  download
+  >Download</a
+>
+
+{% comment %}
+<h4 class="card-title">Job Advatiziments trends</h4>
+<canvas id="orders-chart"></canvas> {% endcomment %}

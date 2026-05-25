@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Fake Job Advertisements</title>
+    <!-- plugins:css -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+
+    <!-- endinject -->
+    <link rel="shortcut icon" href="http://www.urbanui.com/" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:partials/_navbar.html -->
+
+      {% include 'header.html' %}
+
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+          <div id="settings-trigger"><i class="fas fa-fill-drip"></i></div>
+          <div id="theme-settings" class="settings-panel">
+            <i class="settings-close fa fa-times"></i>
+            <p class="settings-heading">SIDEBAR SKINS</p>
+            <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+              <div class="img-ss rounded-circle bg-light border mr-3"></div>
+              Light
+            </div>
+            <div class="sidebar-bg-options" id="sidebar-dark-theme">
+              <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+              Dark
+            </div>
+            <p class="settings-heading mt-2">HEADER SKINS</p>
+            <div class="color-tiles mx-0 px-4">
+              <div class="tiles primary"></div>
+              <div class="tiles success"></div>
+              <div class="tiles warning"></div>
+              <div class="tiles danger"></div>
+              <div class="tiles info"></div>
+              <div class="tiles dark"></div>
+              <div class="tiles default"></div>
+            </div>
+          </div>
+        </div>
+
+        {% include 'sidebar.html' %}
+
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">
+                <span class="alert alert-info">
+                  {{ username }}, here is your uploaded job and history
+                </span>
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    History
+                  </li>
+                </ol>
+              </nav>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Data table</h4>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive">
+                      <table id="order-listing" class="table">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Filename</th>
+                            <th>Result</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for record in records %}
+                          <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ record[1] }}</td>
+                            <!-- filename -->
+                            <td>
+                              <span
+                                class="alert alert-{{ 'danger' if record[2] == 'fake' else 'success' }}"
+                              >
+                                {{ record[2].upper() }}
+                              </span>
+                            </td>
+                            <td>{{ record[3] }}</td>
+
+                            <td>
+                              <a
+                                href="{{ url_for('delete_file', filename=record[1]) }}"
+                                onclick="return confirm('Are you sure you want to delete this file?');"
+                              >
+                                <button class="badge badge-danger badge-pill">
+                                  Delete
+                                </button>
+                              </a>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+
+          <!-- partial:../../partials/_footer.html -->
+          <footer class="footer">
+            <div
+              class="d-sm-flex justify-content-center justify-content-sm-between"
+            >
+              <span
+                class="text-muted text-center text-sm-left d-block d-sm-inline-block"
+                >Copyright © 2026
+                <a href="https://www.urbanui.com/" target="_blank">cive</a>.
+                All rights reserved.</span
+              >
+              <span
+                class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"
+                >Hand-crafted & made with
+                <i class="far fa-heart text-danger"></i
+              ></span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dropify.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/data-table.js') }}"></script>
+
+    <!-- End custom js for this page-->
+  </body>
+
+  <!-- Mirrored from www.urbanui.com/melody/template/pages/forms/basic_elements.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:07:34 GMT -->
+</html>

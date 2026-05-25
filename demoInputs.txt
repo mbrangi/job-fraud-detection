@@ -1,0 +1,16 @@
+{
+    "location": "Dodoma, Tanzania",
+    "salary_range": "50000-70000",
+    "company_profile": "A leading tech company specializing in AI and data science.",
+    "description": "We are looking for a software engineer to build scalable applications.",
+    "requirements": "Proficiency in Python, Django, and machine learning frameworks.",
+    "benefits": "Health insurance, remote work, annual bonuses.",
+    "telecommuting": 1,  # 1 = Yes, 0 = No
+    "has_company_logo": 1,  # 1 = Yes, 0 = No
+    "has_questions": 0,  # 1 = Yes, 0 = No
+    "employment_type": "Full-time",
+    "required_experience": "Mid-Senior level",
+    "required_education": "Bachelor's Degree",
+    "Industry": "Information Technology",
+    "Function": "Engineering"
+}

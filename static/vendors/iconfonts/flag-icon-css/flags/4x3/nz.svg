@@ -1,0 +1,110 @@
+2b4ace537f0de9', 'job_seeker', '2025-05-08 20:01:33'),
+(10, 'ffsfsdfsdf', 'alexs', 'scrypt:32768:8:1$FyuKCdfg3ePLcLxV$097e629dc60da84a43a598aed92c724dccf1195d25255646e285ee710b59c269eb7c08f5820604d63658a91e7e62cbbfe2f5d762a1d68c691d1e6942438a9126', 'job_seeker', '2025-05-08 20:07:16'),
+(11, '', '', 'scrypt:32768:8:1$bLy180sG93hwthcW$a398734ec9195282a2c44312f47904b02db0277259624688186e5933de5fcddca463405e22a4cacbd0e599b4ca10fbf4ac918e5df9709b68449a5815f8997ccc', 'job_seeker', '2025-05-08 20:23:00'),
+(12, 'amina', 'Amina Ramadhani', 'scrypt:32768:8:1$fYsycXax0ZPuvlFh$5163899265ec36b427fae39fb4816e79a30d70d7eaccf0d92a3d5b3389f844b70f71b09a726a1fd8aac9b47e0b8ff1da28dd77fa358062fa85bfa3a5d2de9213', 'job_seeker', '2025-05-08 20:26:55'),
+(13, 'admin', 'Florian Alex', 'scrypt:32768:8:1$tmnC0o9yEl732jT0$a4744aff0cb7f458d661d122cc8ba4c98dc24fbbc00e8302cda656abb2dcb2ed410f1d94d5adbdd793034bee4c750e9344d54836685cbaa3b92e7f21f3b03bd2', 'job_seeker', '2025-05-09 05:47:47');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_history`
+--
+
+CREATE TABLE `user_history` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `job_ad_id` int(11) NOT NULL,
+  `classification_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `classifications`
+--
+ALTER TABLE `classifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `job_ad_id` (`job_ad_id`);
+
+--
+-- Indexes for table `job_ad`
+--
+ALTER TABLE `job_ad`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `job_ads`
+--
+ALTER TABLE `job_ads`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`fullname`);
+
+--
+-- Indexes for table `user_history`
+--
+ALTER TABLE `user_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `job_ad_id` (`job_ad_id`),
+  ADD KEY `classification_id` (`classification_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `classifications`
+--
+ALTER TABLE `classifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `job_ad`
+--
+ALTER TABLE `job_ad`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `job_ads`
+--
+ALTER TABLE `job_ads`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `user_history`
+--
+ALTER TABLE `user_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `classifications`
+--
+ALTER TABLE `classifications`
+  ADD CONSTRAINT `classifications_ibfk_1` FOREIGN KEY (`job_ad_id`) REFERENCES `job_ads` (`id`);
+
+--
+-- Constraints for table `job_ads`
+--
+ALTER TABLE `job_ads`
+  ADD CONSTRAINT `job_ads_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users`

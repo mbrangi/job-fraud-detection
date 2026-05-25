@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Fake Job Advertisements</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  
+
+  <!-- endinject -->
+  <link rel="shortcut icon" href="http://www.urbanui.com/" />
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+
+    {% include 'header.html' %}
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- 

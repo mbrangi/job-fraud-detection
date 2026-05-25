@@ -1,0 +1,28 @@
+ashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return redirect('/login')
+    return render_template('dashboard.html', username=session['username'])
+
+# PDF Upload route
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    pred = None
+    reason = None
+
+    if request.method == 'POST':
+        file = request.files.get('pdf')
+
+        if not file or not file.filename.endswith('.pdf'):
+            flash("Only PDF files are allowed.", "danger")
+            return redirect('/predict')
+
+        # Save the file
+        path = os.path.join('static/uploads', file.filename)
+        file.save(path)
+
+        # # Extract text and predict

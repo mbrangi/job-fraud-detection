@@ -1,0 +1,41 @@
+class="form-check-input" />
+                        Keep me signed in
+                      </label>
+                    </div>
+                    <a href="#" class="auth-link text-black"
+                      >Forgot password?</a
+                    >
+                  </div>
+                  <div class="my-3">
+                    <button
+                      class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                      type="submit"
+                    >
+                      LOGIN
+                    </button>
+                  </div>
+                </form>
+
+                <a href="{{ url_for('register') }}"
+                  >Don't have an account? Register</a
+                >
+              </div>
+            </div>
+            <div class="col-lg-6 login-half-bg d-flex flex-row">
+              <p
+                class="text-white font-weight-medium text-center flex-grow align-self-end"
+              >
+                Copyright &copy; 2025 All rights reserved.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/misc.js') }}"></

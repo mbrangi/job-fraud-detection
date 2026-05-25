@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Fake Job Advertisements</title>
+    <!-- plugins:css -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+
+    <!-- endinject -->
+    <link rel="shortcut icon" href="http://www.urbanui.com/" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:partials/_navbar.html -->
+
+      {% include 'header.html' %}
+
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+          <div id="settings-trigger"><i class="fas fa-fill-drip"></i></div>
+          <div id="theme-settings" class="settings-panel">
+            <i class="settings-close fa fa-times"></i>
+            <p class="settings-heading">SIDEBAR SKINS</p>
+            <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+              <div class="img-ss rounded-circle bg-light border mr-3"></div>
+              Light
+            </div>
+            <div class="sidebar-bg-options" id="sidebar-dark-theme">
+              <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+              Dark
+            </div>
+            <p class="settings-heading mt-2">HEADER SKINS</p>
+            <div class="color-tiles mx-0 px-4">
+              <div class="tiles primary"></div>
+              <div class="tiles success"></div>
+              <div class="tiles warning"></div>
+              <div class="tiles danger"></div>
+              <div class="tiles info"></div>
+              <div class="tiles dark"></div>
+              <div class="tiles default"></div>
+            </div>
+          </div>
+        </div>
+
+        {% include 'sidebar.html' %}
+
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">Validate Job Advertisements</h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    Validate Job Advertisements
+                  </li>
+                  
+                </ol>
+              </nav>
+            </div>
+            <div class="row">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <!-- Flash Messages -->
+                    {% with messages =
+                    get_flashed_messages(with_categories=true) %} {% if messages
+                    %} {% for category, message in messages %}
+                    <div
+                      class="alert alert-{{ category }} alert-dismissible fade show"
+                      role="alert"
+                    >
+                      {{ message }}
+                    </div>
+                    {% endfor %} {% endif %} {% endwith %}
+
+                    <form
+                      method="POST"
+                      enctype="multipart/form-data"
+                      action="{{ url_for('upload') }}"
+                    >
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="col-lg-12 grid-margin stretch-card">
+                            <div class="card">
+                              <div class="card-body">
+                                <h4 class="card-title d-flex">
+                                  Upload pdf file
+                                </h4>
+                                <input
+                                  type="file"
+                                  class="dropify"
+                                  name="pdf"
+                                  accept=".pdf"
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div align="center" class="form-control">
+                          <button
+                            type="submit"
+                            class="btn btn-outline-primary btn-fw"
+                          >
+                            Get Predictions
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+
+                    {% if pred and reason %}
+                    <!-- Prediction Output -->
+                    <div class="mt-4">
+                      <h4>Prediction Result:</h4>
+                      <div class="alert alert-info">
+                        <strong>Status:</strong> {{ pred.upper() }}<br />
+                        <strong>Reason:</strong> {{ reason }}
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+
+          <!-- partial:../../partials/_footer.html -->
+          <footer class="footer">
+            <div
+              class="d-sm-flex justify-content-center justify-content-sm-between"
+            >
+              <span
+                class="text-muted text-center text-sm-left d-block d-sm-inline-block"
+                >Copyright © 2026
+                <a href="https://ifm.ac.tz" target="_blank">ifm</a>.
+                All rights reserved.</span
+              >
+              <span
+                class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"
+                >Hand-crafted & made with
+                <i class="far fa-heart text-danger"></i
+              ></span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dropify.js') }}"></script>
+
+    <!-- End custom js for this page-->
+  </body>
+
+  <!-- Mirrored from www.urbanui.com/melody/template/pages/forms/basic_elements.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:07:34 GMT -->
+</html>

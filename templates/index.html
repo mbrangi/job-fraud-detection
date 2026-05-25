@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Mirrored from www.urbanui.com/melody/template/pages/samples/login-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:08:53 GMT -->
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Fake Job Advertisements</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div
+          class="content-wrapper d-flex align-items-stretch auth auth-img-bg"
+        >
+          <div class="row flex-grow">
+            <div
+              class="col-lg-6 d-flex align-items-center justify-content-center"
+            >
+              <div class="auth-form-transparent text-left p-3">
+                <h4 style="padding: 10px">Fake Job Advertisement Detection</h4>
+                <h6 class="font-weight-light"></h6>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %} {% for category, message in messages %}
+                <div
+                  class="alert alert-{{ category }} alert-dismissible fade show"
+                  role="alert"
+                >
+                  {{ message }}
+                </div>
+                {% endfor %} {% endif %} {% endwith %}
+
+                <form
+                  method="POST"
+                  action="{{ url_for('login') }}"
+                  class="pt-3"
+                >
+                  <div class="form-group">
+                    <label for="exampleInputEmail">Username</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend bg-transparent">
+                        <span
+                          class="input-group-text bg-transparent border-right-0"
+                        >
+                          <i class="fa fa-user text-primary"></i>
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        class="form-control form-control-lg border-left-0"
+                        id="exampleInputEmail"
+                        placeholder="Username"
+                        name="username"
+                          Required
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword">Password</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend bg-transparent">
+                        <span
+                          class="input-group-text bg-transparent border-right-0"
+                        >
+                          <i class="fa fa-lock text-primary"></i>
+                        </span>
+                      </div>
+                      <input
+                        type="password"
+                        class="form-control form-control-lg border-left-0"
+                        id="exampleInputPassword"
+                        placeholder="Password"
+                        name="password"
+                        Required
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="my-2 d-flex justify-content-between align-items-center"
+                  >
+                    <div class="form-check">
+                      <label class="form-check-label text-muted">
+                        <input type="checkbox" class="form-check-input" />
+                        Keep me signed in
+                      </label>
+                    </div>
+                    <a href="#" class="auth-link text-black"
+                      >Forgot password?</a
+                    >
+                  </div>
+                  <div class="my-3">
+                    <button
+                      class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                      type="submit"
+                    >
+                      LOGIN
+                    </button>
+                  </div>
+                </form>
+
+                <a href="{{ url_for('register') }}"
+                  >Don't have an account? Register</a
+                >
+              </div>
+            </div>
+            <div class="col-lg-6 login-half-bg d-flex flex-row">
+              <p
+                class="text-white font-weight-medium text-center flex-grow align-self-end"
+              >
+                Copyright &copy; 2026 All rights reserved.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  </body>
+
+  <!-- Mirrored from www.urbanui.com/melody/template/pages/samples/login-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:08:53 GMT -->
+</html>

@@ -1,0 +1,31 @@
+              const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ labels|tojson }},
+                            datasets: [{
+                                label: 'Prediction Summary',
+                                data: {{ counts|tojson }},
+                                backgroundColor: ['green', 'red'],
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                  </script>
+                  
+
+                
+               
+
+
+
+
+
+                  <div id="orders-ch

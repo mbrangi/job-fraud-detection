@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Mirrored from www.urbanui.com/melody/template/pages/samples/login-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:08:53 GMT -->
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Fake Job Advatiziments</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div
+          class="content-wrapper d-flex align-items-stretch auth auth-img-bg"
+        >
+          <div class="row flex-grow">
+            <div
+              class="col-lg-6 d-flex align-items-center justify-content-center"
+            >
+              <div class="auth-form-transparent text-left p-3">
+                <h4 style="padding: 10px">Fake Job Advertisement Detection</h4>
+                <h6 class="font-weight-light"></h6>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %} {% for category, message in messages %}
+                <div
+                  class="alert alert-{{ category }} alert-dism

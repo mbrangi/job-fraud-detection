@@ -1,0 +1,70 @@
+WEBVTT
+
+00:00.790 --> 00:04.870
+So let us begin talking about how web works.
+
+00:04.870 --> 00:06.880
+So we'll talk about two things.
+
+00:06.880 --> 00:09.520
+First, the internet and the web.
+
+00:09.520 --> 00:12.520
+And it's crucial that you understand the difference between the two.
+
+00:12.520 --> 00:14.050
+So what is internet?
+
+00:14.080 --> 00:22.450
+Internet is a global network of computers that is connected through various technologies, including
+
+00:22.450 --> 00:24.640
+cables and wireless connections.
+
+00:24.640 --> 00:33.130
+On the other hand, World Wide Web is a way of accessing information over the medium of internet, and
+
+00:33.130 --> 00:41.260
+this particularly involves the usage of browsers to view web pages that are linked to others using something
+
+00:41.260 --> 00:42.580
+called as hyperlinks.
+
+00:42.610 --> 00:50.560
+All right now, internet or the working of web involves something called as a client.
+
+00:50.590 --> 00:54.910
+Now here you can see this is the computer which is a client.
+
+00:54.910 --> 00:56.980
+And then you have the concept of a server.
+
+00:56.980 --> 01:01.210
+So web typically operates on the client server model okay.
+
+01:01.210 --> 01:08.440
+Now client over here like I said is a web browser like Chrome Firefox Safari that you normally use to
+
+01:08.440 --> 01:10.660
+access different websites.
+
+01:10.660 --> 01:15.280
+Now this client will send the request to the server.
+
+01:15.310 --> 01:15.640
+Okay.
+
+01:15.640 --> 01:16.990
+So there is something called as server.
+
+01:16.990 --> 01:18.400
+Like I said okay.
+
+01:18.400 --> 01:23.140
+So it will send the request and it will also receive the response.
+
+01:23.140 --> 01:29.560
+Now server is a computer designed to process the request that is being sent by the client.
+
+01:29.560 --> 01:37.960
+A
