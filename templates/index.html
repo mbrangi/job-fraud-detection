@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!-- Mirrored from www.urbanui.com/melody/template/pages/samples/login-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:08:53 GMT -->
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -51,13 +49,9 @@
                 </div>
                 {% endfor %} {% endif %} {% endwith %}
 
-                <form
-                  method="POST"
-                  action="{{ url_for('login') }}"
-                  class="pt-3"
-                >
+                <form id="loginForm" class="pt-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail">Username</label>
+                    <label for="emailInput">Email / Username</label>
                     <div class="input-group">
                       <div class="input-group-prepend bg-transparent">
                         <span
@@ -69,15 +63,15 @@
                       <input
                         type="text"
                         class="form-control form-control-lg border-left-0"
-                        id="exampleInputEmail"
-                        placeholder="Username"
+                        id="emailInput"
+                        placeholder="Email / Username"
                         name="username"
-                          Required
+                        required
                       />
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword">Password</label>
+                    <label for="passwordInput">Password</label>
                     <div class="input-group">
                       <div class="input-group-prepend bg-transparent">
                         <span
@@ -89,30 +83,22 @@
                       <input
                         type="password"
                         class="form-control form-control-lg border-left-0"
-                        id="exampleInputPassword"
+                        id="passwordInput"
                         placeholder="Password"
                         name="password"
-                        Required
+                        required
                       />
                     </div>
                   </div>
-                  <div
-                    class="my-2 d-flex justify-content-between align-items-center"
-                  >
-                    <div class="form-check">
-                      <label class="form-check-label text-muted">
-                        <input type="checkbox" class="form-check-input" />
-                        Keep me signed in
-                      </label>
-                    </div>
-                    <a href="#" class="auth-link text-black"
-                      >Forgot password?</a
-                    >
+                  <div id="loginError" class="alert alert-danger d-none"></div>
+                  <div class="d-flex justify-content-end mb-3">
+                    <a href="{{ url_for('reset_password_page') }}" class="auth-link text-black small">Forgot password?</a>
                   </div>
                   <div class="my-3">
                     <button
                       class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
                       type="submit"
+                      id="loginBtn"
                     >
                       LOGIN
                     </button>
@@ -133,9 +119,7 @@
             </div>
           </div>
         </div>
-        <!-- content-wrapper ends -->
       </div>
-      <!-- page-body-wrapper ends -->
     </div>
     <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
     <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
@@ -145,7 +129,60 @@
     <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
     <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-  </body>
 
-  <!-- Mirrored from www.urbanui.com/melody/template/pages/samples/login-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:08:53 GMT -->
+    <script type="module">
+      import { auth, signInWithEmailAndPassword } from "{{ url_for('static', filename='js/firebase-config.js') }}";
+
+      const form = document.getElementById('loginForm');
+      const emailInput = document.getElementById('emailInput');
+      const passwordInput = document.getElementById('passwordInput');
+      const loginBtn = document.getElementById('loginBtn');
+      const loginError = document.getElementById('loginError');
+
+      async function resolveEmail(input) {
+        if (input.includes('@')) return input;
+        const formData = new FormData();
+        formData.append('username', input);
+        const res = await fetch('{{ url_for("lookup_email") }}', { method: 'POST', body: formData });
+        if (!res.ok) throw new Error('Username not found');
+        const data = await res.json();
+        return data.email;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing in...';
+        loginError.classList.add('d-none');
+
+        try {
+          const email = await resolveEmail(emailInput.value.trim());
+          const userCredential = await signInWithEmailAndPassword(auth, email, passwordInput.value);
+          const idToken = await userCredential.user.getIdToken();
+
+          const formData = new FormData();
+          formData.append('idToken', idToken);
+
+          const response = await fetch('{{ url_for("login") }}', {
+            method: 'POST',
+            body: formData
+          });
+
+          if (response.redirected) {
+            window.location.href = response.url;
+          } else {
+            const html = await response.text();
+            document.open();
+            document.write(html);
+            document.close();
+          }
+        } catch (error) {
+          loginError.textContent = error.message;
+          loginError.classList.remove('d-none');
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'LOGIN';
+        }
+      });
+    </script>
+  </body>
 </html>

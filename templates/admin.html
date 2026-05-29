@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Admin - Job Fraud Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container-scroller">
+    {% include 'header.html' %}
+    <div class="container-fluid page-body-wrapper">
+      <div class="theme-setting-wrapper">
+        <div id="settings-trigger"><i class="fas fa-fill-drip"></i></div>
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close fa fa-times"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles primary"></div>
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+      </div>
+      {% include 'sidebar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}{% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}</div>
+          {% endfor %}{% endif %}{% endwith %}
+
+          <div class="page-header">
+            <h3 class="page-title">Admin Dashboard</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item active">Dashboard</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="row grid-margin">
+            <div class="col-12">
+              <div class="card card-statistics">
+                <div class="card-body">
+                  <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                    <div class="statistics-item">
+                      <p><i class="icon-sm fa fa-users mr-2"></i>Total Users</p>
+                      <h2>{{ total_users }}</h2>
+                    </div>
+                    <div class="statistics-item">
+                      <p><i class="icon-sm fa fa-file mr-2"></i>Total Records</p>
+                      <h2>{{ total_records }}</h2>
+                    </div>
+                    <div class="statistics-item">
+                      <p><i class="icon-sm fas fa-hourglass-half mr-2"></i>Fake</p>
+                      <h2>{{ fake_count }}</h2>
+                    </div>
+                    <div class="statistics-item">
+                      <p><i class="icon-sm fas fa-cloud-download-alt mr-2"></i>Legit</p>
+                      <h2>{{ legit_count }}</h2>
+                    </div>
+                    <div class="statistics-item">
+                      <p><i class="icon-sm fas fa-exclamation-triangle mr-2"></i>Invalid</p>
+                      <h2>{{ invalid_count }}</h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="btn-group" role="group">
+                {% if 'view_users' in user_permissions %}<a href="/admin/users" class="btn btn-outline-primary btn-sm">Manage Users</a>{% endif %}
+                {% if 'manage_roles' in user_permissions %}<a href="/admin/permissions" class="btn btn-outline-info btn-sm">Permissions</a>{% endif %}
+                {% if 'view_jobs' in user_permissions %}<a href="/admin/jobs" class="btn btn-outline-secondary btn-sm">All Records</a>{% endif %}
+                {% if 'export_data' in user_permissions %}<a href="/admin/export" class="btn btn-outline-success btn-sm">Export CSV</a>{% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Per-User Statistics</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>User</th>
+                          <th>PDFs</th>
+                          <th>URLs</th>
+                          <th>Fake</th>
+                          <th>Legit</th>
+                          <th>Invalid</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for uname, stats in user_stats.items() %}
+                        <tr>
+                          <td>{{ uname }}</td>
+                          <td>{{ stats.pdf }}</td>
+                          <td>{{ stats.url }}</td>
+                          <td>{{ stats.fake }}</td>
+                          <td>{{ stats.legit }}</td>
+                          <td>{{ stats.invalid }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">All Records</h4>
+                  <div class="table-responsive">
+                    <table id="admin-listing" class="table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>User</th>
+                          <th>Type</th>
+                          <th>File / URL</th>
+                          <th>Result</th>
+                          <th>Reason</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for record in records %}
+                        <tr>
+                          <td>{{ loop.index }}</td>
+                          <td>{{ record.user }}</td>
+                          <td>{{ record.type }}</td>
+                          <td style="max-width:250px;word-break:break-all;">{{ record.filename }}</td>
+                          <td>
+                            <span class="alert alert-{{ 'danger' if record.result == 'fake' else 'success' if record.result == 'legit' else 'warning' }}" style="padding:2px 8px;margin:0;font-size:11px;">
+                              {{ record.result.upper() }}
+                            </span>
+                          </td>
+                          <td>{{ record.reason }}</td>
+                          <td>
+                            <a href="{{ url_for('admin_delete', doc_type=record.type, doc_id=record.id) }}"
+                               onclick="return confirm('Delete this record?');">
+                              <button class="badge badge-danger badge-pill">Delete</button>
+                            </a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright &copy; 2026. All rights reserved.</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/data-table.js') }}"></script>
+  <script>
+    $(function() {
+      $('#admin-listing').DataTable({
+        "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+        "iDisplayLength": 10,
+        "language": { search: "" }
+      });
+    });
+  </script>
+</body>
+</html>

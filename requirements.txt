@@ -1,10 +1,12 @@
 flask
 flask-login
 flask-bcrypt
-flask-mysqldb
-PyMySQL
+firebase-admin
 joblib
 pandas
 scikit-learn
 numpy
 gunicorn
+pdfplumber
+tensorflow
+nltk

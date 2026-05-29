@@ -16,23 +16,23 @@
       <tr>
         <td>{{ loop.index }}</td>
 
-        <td>{{ record[0] }}</td>
+        <td>{{ record.filename }}</td>
 
-        <td>{{ record[1] }}</td>
+        <td>{{ record.filename }}</td>
 
         <td>
           <span
-            class="alert alert-{{ 'danger' if record[2] == 'fake' else 'success' }}"
+            class="alert alert-{{ 'danger' if record.result == 'fake' else 'success' if record.result == 'legit' else 'warning' }}"
           >
-            {{ record[2].upper() }}
+            {{ record.result.upper() }}
           </span>
         </td>
 
-        <td>{{ record[3] }}</td>
+        <td>{{ record.created_at }}</td>
 
         <td>
           <a
-            href="{{ url_for('delete_file', filename=record[1]) }}"
+            href="{{ url_for('delete_file', doc_type=record.type, doc_id=record.id) }}"
             onclick="return confirm('Are you sure you want to delete this file?');"
           >
             <button class="badge badge-danger badge-pill">

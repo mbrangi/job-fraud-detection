@@ -89,29 +89,22 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h3 class="page-title">Classification Results (Fake vs Legit vs Invalid)</h3>
+                  <h3 class="page-title">Classification Results (PDFs & URLs Combined)</h3>
                   <canvas id="myChart"></canvas>
                   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                   <script>
                     const ctx = document.getElementById('myChart').getContext('2d');
-                    const myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: {{ labels|tojson|safe }},
-                            datasets: [{
-                                label: 'Prediction Summary',
-                                data: {{ counts|tojson|safe }},
-                                backgroundColor: ['red', 'orange', 'green'],
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
+                    new Chart(ctx, {
+                      type: 'bar',
+                      data: {
+                        labels: {{ labels|tojson|safe }},
+                        datasets: [{
+                          label: 'Prediction Summary',
+                          data: {{ counts|tojson|safe }},
+                          backgroundColor: ['red', 'orange', 'green', '#4CAF50', '#f44336'],
+                        }]
+                      },
+                      options: { responsive: true, scales: { y: { beginAtZero: true } } }
                     });
                   </script>
                   <div id="orders-chart-legend" class="orders-chart-legend"></div>

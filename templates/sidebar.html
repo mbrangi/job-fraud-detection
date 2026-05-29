@@ -45,6 +45,30 @@
         </ul>
       </div>
     </li>
+    {% if is_admin %}
+    <li class="nav-item d-none d-lg-block">
+      <a class="nav-link" data-toggle="collapse" href="#sidebar-admin" aria-expanded="false" aria-controls="sidebar-admin">
+        <i class="fa fa-shield-alt menu-icon"></i>
+        <span class="menu-title">Admin Panel</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="sidebar-admin">
+        <ul class="nav flex-column sub-menu">
+          {% if 'view_analytics' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin">Dashboard</a></li>{% endif %}
+          {% if 'view_users' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/users">Manage Users</a></li>{% endif %}
+          {% if 'manage_roles' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/permissions">Permissions</a></li>{% endif %}
+          {% if 'view_jobs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/jobs">All Records</a></li>{% endif %}
+          {% if 'export_data' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/export">Export Data</a></li>{% endif %}
+        </ul>
+      </div>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('logout') }}">
+        <i class="fa fa-sign-out-alt menu-icon"></i>
+        <span class="menu-title">Logout</span>
+      </a>
+    </li>
   </ul>
 </nav>
 <!-- partial -->

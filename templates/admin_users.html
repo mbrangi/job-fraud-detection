@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Manage Users - Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container-scroller">
+    {% include 'header.html' %}
+    <div class="container-fluid page-body-wrapper">
+      {% include 'sidebar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}{% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}</div>
+          {% endfor %}{% endif %}{% endwith %}
+
+          <div class="page-header">
+            <h3 class="page-title">Manage Users</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
+                <li class="breadcrumb-item active">Users</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="users-table" class="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Username</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Permissions</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for u in users %}
+                    <tr>
+                      <td>{{ loop.index }}</td>
+                      <td>{{ u.username }}</td>
+                      <td>{{ u.fullname }}</td>
+                      <td>{{ u.email }}</td>
+                      <td>{% if u.super_admin %}<span class="badge badge-success">Super Admin</span>{% else %}<span class="badge badge-secondary">User</span>{% endif %}</td>
+                      <td style="max-width:250px;">
+                        {% for p in u.permissions[:5] %}
+                        <span class="badge badge-info" style="font-size:9px;">{{ permission_names.get(p, p) }}</span>
+                        {% endfor %}
+                        {% if u.permissions|length > 5 %}<span class="badge badge-light">+{{ u.permissions|length - 5 }}</span>{% endif %}
+                        {% if not u.permissions %}<span class="text-muted">None</span>{% endif %}
+                      </td>
+                      <td>
+                        {% if 'manage_roles' in user_permissions %}
+                        <a href="/admin/permissions" class="btn btn-sm btn-outline-info">Permissions</a>
+                        {% endif %}
+                        {% if 'delete_users' in user_permissions and u.uid != session.user_id %}
+                        <a href="{{ url_for('admin_delete_user', uid=u.uid) }}"
+                           onclick="return confirm('Delete user {{ u.username }} and all their records?');"
+                           class="btn btn-sm btn-outline-danger">Delete</a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted">Copyright &copy; 2026</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/data-table.js') }}"></script>
+  <script>
+    $(function() { $('#users-table').DataTable({ "aLengthMenu": [[5,10,15,-1],[5,10,15,"All"]], "iDisplayLength": 10, "language": { search: "" } }); });
+  </script>
+</body>
+</html>

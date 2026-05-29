@@ -41,5 +41,14 @@ dist/
 build/
 *.egg-info/
 
-# Database dump (optional - remove this line if you want to upload it)
-# fraud_detection.sql
+# Firestore service account key (keep this secret!)
+serviceAccountKey.json
+
+# Uploaded PDF files
+static/uploads/*.pdf
+
+# Local SQLite database
+app.db
+
+# Generated proposal
+Proposal.pdf

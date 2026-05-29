@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>All Job Posts - Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container-scroller">
+    {% include 'header.html' %}
+    <div class="container-fluid page-body-wrapper">
+      {% include 'sidebar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}{% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}</div>
+          {% endfor %}{% endif %}{% endwith %}
+
+          <div class="page-header">
+            <h3 class="page-title">All Job Posts & URL Checks</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
+                <li class="breadcrumb-item active">Jobs</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="jobs-table" class="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>User</th>
+                      <th>Type</th>
+                      <th>File / URL</th>
+                      <th>Result</th>
+                      <th>Reason</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for r in records %}
+                    <tr>
+                      <td>{{ loop.index }}</td>
+                      <td>{{ r.user }}</td>
+                      <td>{{ r.type }}</td>
+                      <td style="max-width:250px;word-break:break-all;">{{ r.filename }}</td>
+                      <td>
+                        <span class="alert alert-{{ 'danger' if r.result == 'fake' else 'success' if r.result == 'legit' else 'warning' }}" style="padding:2px 8px;margin:0;font-size:11px;">
+                          {{ r.result.upper() }}
+                        </span>
+                      </td>
+                      <td>{{ r.reason }}</td>
+                      <td>
+                        {% if 'delete_jobs' in user_permissions %}
+                        <a href="{{ url_for('admin_delete', doc_type=r.type, doc_id=r.id) }}"
+                           onclick="return confirm('Delete this record?');">
+                          <button class="badge badge-danger badge-pill">Delete</button>
+                        </a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted">Copyright &copy; 2026</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/data-table.js') }}"></script>
+  <script>
+    $(function() { $('#jobs-table').DataTable({ "aLengthMenu": [[5,10,15,-1],[5,10,15,"All"]], "iDisplayLength": 10, "language": { search: "" } }); });
+  </script>
+</body>
+</html>
