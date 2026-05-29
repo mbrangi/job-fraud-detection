@@ -22,7 +22,7 @@
     </li>
 
     <li class="nav-item"></li>
-    <li class="nav-item d-none d-lg-block">
+    <li class="nav-item">
       <a
         class="nav-link"
         data-toggle="collapse"
@@ -46,7 +46,7 @@
       </div>
     </li>
     {% if is_admin %}
-    <li class="nav-item d-none d-lg-block">
+    <li class="nav-item">
       <a class="nav-link" data-toggle="collapse" href="#sidebar-admin" aria-expanded="false" aria-controls="sidebar-admin">
         <i class="fa fa-shield-alt menu-icon"></i>
         <span class="menu-title">Admin Panel</span>
@@ -55,10 +55,10 @@
       <div class="collapse" id="sidebar-admin">
         <ul class="nav flex-column sub-menu">
           {% if 'view_analytics' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin">Dashboard</a></li>{% endif %}
-          {% if 'view_users' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/users">Manage Users</a></li>{% endif %}
+          {% if 'view_users' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/users">Users</a></li>{% endif %}
           {% if 'manage_roles' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/permissions">Permissions</a></li>{% endif %}
-          {% if 'view_jobs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/jobs">All Records</a></li>{% endif %}
-          {% if 'export_data' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/export">Export Data</a></li>{% endif %}
+          {% if 'view_jobs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/jobs">Records</a></li>{% endif %}
+          {% if 'export_data' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/export">Export</a></li>{% endif %}
         </ul>
       </div>
     </li>

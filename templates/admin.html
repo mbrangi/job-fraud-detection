@@ -82,11 +82,11 @@
 
           <div class="row mb-4">
             <div class="col-12">
-              <div class="btn-group" role="group">
-                {% if 'view_users' in user_permissions %}<a href="/admin/users" class="btn btn-outline-primary btn-sm">Manage Users</a>{% endif %}
-                {% if 'manage_roles' in user_permissions %}<a href="/admin/permissions" class="btn btn-outline-info btn-sm">Permissions</a>{% endif %}
-                {% if 'view_jobs' in user_permissions %}<a href="/admin/jobs" class="btn btn-outline-secondary btn-sm">All Records</a>{% endif %}
-                {% if 'export_data' in user_permissions %}<a href="/admin/export" class="btn btn-outline-success btn-sm">Export CSV</a>{% endif %}
+              <div class="d-flex flex-wrap gap-2">
+                {% if 'view_users' in user_permissions %}<a href="/admin/users" class="btn btn-outline-primary btn-sm m-1">Manage Users</a>{% endif %}
+                {% if 'manage_roles' in user_permissions %}<a href="/admin/permissions" class="btn btn-outline-info btn-sm m-1">Permissions</a>{% endif %}
+                {% if 'view_jobs' in user_permissions %}<a href="/admin/jobs" class="btn btn-outline-secondary btn-sm m-1">All Records</a>{% endif %}
+                {% if 'export_data' in user_permissions %}<a href="/admin/export" class="btn btn-outline-success btn-sm m-1">Export CSV</a>{% endif %}
               </div>
             </div>
           </div>
@@ -194,9 +194,15 @@
   <script>
     $(function() {
       $('#admin-listing').DataTable({
+        responsive: true,
         "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
         "iDisplayLength": 10,
-        "language": { search: "" }
+        "language": { search: "" },
+        columnDefs: [
+          { responsivePriority: 1, targets: 0 },
+          { responsivePriority: 2, targets: 4 },
+          { responsivePriority: 3, targets: -1 }
+        ]
       });
     });
   </script>

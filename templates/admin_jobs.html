@@ -93,7 +93,19 @@
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
   <script src="{{ url_for('static', filename='js/data-table.js') }}"></script>
   <script>
-    $(function() { $('#jobs-table').DataTable({ "aLengthMenu": [[5,10,15,-1],[5,10,15,"All"]], "iDisplayLength": 10, "language": { search: "" } }); });
+    $(function() {
+      $('#jobs-table').DataTable({
+        responsive: true,
+        "aLengthMenu": [[5,10,15,-1],[5,10,15,"All"]],
+        "iDisplayLength": 10,
+        "language": { search: "" },
+        columnDefs: [
+          { responsivePriority: 1, targets: 0 },
+          { responsivePriority: 2, targets: 4 },
+          { responsivePriority: 3, targets: -1 }
+        ]
+      });
+    });
   </script>
 </body>
 </html>
