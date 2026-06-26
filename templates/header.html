@@ -5,6 +5,9 @@
     <a class="navbar-brand brand-logo-mini" href="/home">JFD</a>
   </div>
   <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+    <button class="btn btn-sm btn-link text-white mr-2" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+      <i id="darkModeIcon" class="fa fa-moon"></i>
+    </button>
     <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="offcanvas">
       <span class="fa fa-bars"></span>
     </button>
@@ -84,5 +87,45 @@
   </div>
 </footer>
 
+<style>
+.dark-mode, .dark-mode .container-scroller { background: #1a1a2e; color: #e0e0e0; }
+.dark-mode .card { background: #16213e; border-color: #0f3460; color: #e0e0e0; }
+.dark-mode .card .card-title { color: #e0e0e0; }
+.dark-mode .navbar { background: #0f3460 !important; }
+.dark-mode .sidebar { background: #16213e; }
+.dark-mode .sidebar .nav-item .nav-link { color: #a0a0b0; }
+.dark-mode .sidebar .nav-item .nav-link:hover { color: #fff; }
+.dark-mode .sidebar .sub-menu .nav-link { color: #8899aa; }
+.dark-mode .main-panel { background: #1a1a2e; }
+.dark-mode .content-wrapper { background: #1a1a2e; }
+.dark-mode .page-header h3 { color: #e0e0e0; }
+.dark-mode .breadcrumb { background: #16213e; }
+.dark-mode .breadcrumb-item, .dark-mode .breadcrumb-item a { color: #8899aa; }
+.dark-mode .table { color: #e0e0e0; }
+.dark-mode .table-striped tbody tr:nth-of-type(odd) { background: rgba(255,255,255,0.03); }
+.dark-mode .table thead th { border-color: #0f3460; }
+.dark-mode .footer { background: #16213e; color: #8899aa; border-color: #0f3460; }
+.dark-mode .form-control { background: #1a1a2e; border-color: #0f3460; color: #e0e0e0; }
+.dark-mode .alert { background: transparent; }
+.dark-mode .dataTables_wrapper .dataTables_filter input,
+.dark-mode .dataTables_wrapper .dataTables_length select { background: #1a1a2e; border-color: #0f3460; color: #e0e0e0; }
+.dark-mode .theme-setting-wrapper { display: none; }
+.dark-mode .settings-panel { background: #16213e; }
+.dark-mode .page-title { color: #e0e0e0; }
+</style>
+<script>
+(function() {
+  var dark = localStorage.getItem('darkMode') === 'true';
+  if (dark) document.body.classList.add('dark-mode');
+  if (dark) document.getElementById('darkModeIcon').className = 'fa fa-sun';
+})();
+function toggleDarkMode() {
+  var el = document.body;
+  el.classList.toggle('dark-mode');
+  var on = el.classList.contains('dark-mode');
+  localStorage.setItem('darkMode', on);
+  document.getElementById('darkModeIcon').className = on ? 'fa fa-sun' : 'fa fa-moon';
+}
+</script>
 <!-- partial -->
 </div>

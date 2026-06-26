@@ -86,32 +86,52 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-12 grid-margin stretch-card">
+            <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h3 class="page-title">Classification Results (PDFs & URLs Combined)</h3>
+                  <h3 class="page-title">Classification Results</h3>
                   <canvas id="myChart"></canvas>
-                  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                  <script>
-                    const ctx = document.getElementById('myChart').getContext('2d');
-                    new Chart(ctx, {
-                      type: 'bar',
-                      data: {
-                        labels: {{ labels|tojson|safe }},
-                        datasets: [{
-                          label: 'Prediction Summary',
-                          data: {{ counts|tojson|safe }},
-                          backgroundColor: ['red', 'orange', 'green', '#4CAF50', '#f44336'],
-                        }]
-                      },
-                      options: { responsive: true, scales: { y: { beginAtZero: true } } }
-                    });
-                  </script>
                   <div id="orders-chart-legend" class="orders-chart-legend"></div>
                 </div>
               </div>
             </div>
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="page-title">Weekly Trend</h3>
+                  <canvas id="trendChart"></canvas>
+                </div>
+              </div>
+            </div>
           </div>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            new Chart(document.getElementById('myChart'), {
+              type: 'bar',
+              data: {
+                labels: {{ labels|tojson|safe }},
+                datasets: [{
+                  label: 'Prediction Summary',
+                  data: {{ counts|tojson|safe }},
+                  backgroundColor: ['#f44336', '#4CAF50', '#ff9800'],
+                }]
+              },
+              options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+            {% if trend_labels != '[]' and trend_labels != '""' %}
+            new Chart(document.getElementById('trendChart'), {
+              type: 'line',
+              data: {
+                labels: {{ trend_labels|safe }},
+                datasets: [
+                  { label: 'Fake', data: {{ trend_fake|safe }}, borderColor: '#f44336', fill: false, tension: 0.3 },
+                  { label: 'Legit', data: {{ trend_legit|safe }}, borderColor: '#4CAF50', fill: false, tension: 0.3 }
+                ]
+              },
+              options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+            {% endif %}
+          </script>
         </div>
         <!-- content-wrapper ends -->
         <footer class="footer">

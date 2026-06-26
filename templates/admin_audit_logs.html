@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Audit Logs - Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container-scroller">
+    {% include 'header.html' %}
+    <div class="container-fluid page-body-wrapper">
+      {% include 'sidebar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}</div>
+          {% endfor %}{% endif %}{% endwith %}
+
+          <div class="page-header">
+            <h3 class="page-title">Audit Logs</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
+                <li class="breadcrumb-item active">Audit Logs</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="audit-table" class="table">
+                  <thead><tr><th>Action</th><th>User</th><th>Details</th><th>Timestamp</th></tr></thead>
+                  <tbody>
+                    {% for log in logs %}
+                    <tr>
+                      <td><span class="badge badge-{{ 'danger' if 'delete' in log.action else 'info' }}">{{ log.action }}</span></td>
+                      <td>{{ log.username }}</td>
+                      <td style="max-width:300px;word-break:break-all;">{{ log.details }}</td>
+                      <td>{{ log.timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not logs %}<tr><td colspan="4" class="text-muted">No audit logs yet.</td></tr>{% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted">Copyright &copy; 2026</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/data-table.js') }}"></script>
+  <script>$(function(){ $('#audit-table').DataTable({ responsive: true, order: [[3,'desc']], "aLengthMenu": [[10,25,50,-1],[10,25,50,"All"]], "iDisplayLength": 25 }); });</script>
+</body>
+</html>

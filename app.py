@@ -2,7 +2,8 @@ import os
 import json
 import traceback
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, Response
+import csv, io
 import firebase_admin
 from firebase_admin import credentials, auth as firebase_auth, firestore
 import joblib
@@ -144,6 +145,47 @@ def register_page():
 def reset_password_page():
     return render_template('reset-password.html')
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile_page():
+    if request.method == 'POST':
+        new_username = request.form.get('username', '').strip()
+        if new_username and len(new_username) >= 3:
+            db.collection('users').document(session['user_id']).update({'username': new_username})
+            session['username'] = new_username
+            audit_log('profile_update', session['user_id'], f'Username changed to {new_username}')
+            flash('Username updated!', 'success')
+        else:
+            flash('Username must be at least 3 characters.', 'danger')
+        return redirect('/profile')
+    user_doc = db.collection('users').document(session['user_id']).get()
+    user_data = user_doc.to_dict() if user_doc.exists else {}
+    return render_template('profile.html',
+        username=session.get('username', 'User'),
+        email=user_data.get('email', ''),
+        fullname=user_data.get('fullname', ''),
+        user_username=user_data.get('username', ''),
+        created_at=str(user_data.get('created_at', ''))
+    )
+
+@app.route('/export/my-data')
+@login_required
+def export_my_data():
+    uid = session['user_id']
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Type', 'Filename/URL', 'Result', 'Reason', 'Date'])
+    for doc in db.collection('job_ads').where('user_id', '==', uid).stream():
+        d = doc.to_dict()
+        writer.writerow(['PDF', d.get('filename',''), d.get('result',''), d.get('reason',''), str(d.get('created_at',''))])
+    for doc in db.collection('url_checks').where('user_id', '==', uid).stream():
+        d = doc.to_dict()
+        writer.writerow(['URL', d.get('url',''), d.get('result',''), d.get('reason',''), str(d.get('created_at',''))])
+    return Response(
+        output.getvalue(), mimetype='text/csv',
+        headers={'Content-Disposition': 'attachment;filename=my_fraud_checks.csv'}
+    )
+
 @app.route('/dashboard')
 @login_required
 def dashboard_page():
@@ -243,23 +285,36 @@ def logout():
 
 def stats(user_id=None):
     if not FIREBASE_INITIALIZED:
-        return {'fake_count': 0, 'legit_count': 0, 'invalid_count': 0, 'total_jobs': 0, 'labels': ['Fake', 'Legit', 'Invalid'], 'counts': [0, 0, 0]}
+        return {'fake_count': 0, 'legit_count': 0, 'invalid_count': 0, 'total_jobs': 0,
+                'labels': ['Fake', 'Legit', 'Invalid'], 'counts': [0, 0, 0],
+                'trend_labels': [], 'trend_fake': [], 'trend_legit': []}
     fake = legit = invalid = 0
+    from collections import defaultdict
+    weekly = defaultdict(lambda: {'fake':0, 'legit':0})
     collections = ['job_ads', 'url_checks']
     for col in collections:
         docs = db.collection(col)
         if user_id:
             docs = docs.where('user_id', '==', user_id)
         for doc in docs.stream():
-            r = doc.to_dict().get('result', '')
+            d = doc.to_dict()
+            r = d.get('result', '')
             if r == 'fake': fake += 1
             elif r == 'legit': legit += 1
             else: invalid += 1
+            ts = d.get('created_at')
+            if ts and hasattr(ts, 'strftime'):
+                week = ts.strftime('%Y-%W')
+                if r in ('fake', 'legit'): weekly[week][r] += 1
     total = fake + legit + invalid
+    sorted_weeks = sorted(weekly.keys())
     return {
         'fake_count': fake, 'legit_count': legit, 'invalid_count': invalid, 'total_jobs': total,
         'labels': ['Fake', 'Legit', 'Invalid'],
-        'counts': [fake, legit, invalid]
+        'counts': [fake, legit, invalid],
+        'trend_labels': json.dumps(sorted_weeks),
+        'trend_fake': json.dumps([weekly[w]['fake'] for w in sorted_weeks]),
+        'trend_legit': json.dumps([weekly[w]['legit'] for w in sorted_weeks])
     }
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -333,13 +388,15 @@ def delete_file(doc_type, doc_id):
             filename = doc.to_dict().get('filename', '')
             doc_ref.delete()
             path = os.path.join('static/uploads', filename)
-            if os.path.exists(path):
-                os.remove(path)
+            if os.path.exists(path): os.remove(path)
+            audit_log('delete', user_id, f'Deleted PDF: {filename}')
     elif doc_type == 'url':
         doc_ref = db.collection('url_checks').document(doc_id)
         doc = doc_ref.get()
         if doc.exists and doc.to_dict().get('user_id') == user_id:
+            url = doc.to_dict().get('url', '')
             doc_ref.delete()
+            audit_log('delete', user_id, f'Deleted URL check: {url}')
     return redirect('/history')
 
 def extract_text_from_pdf(path):
@@ -366,6 +423,17 @@ def preprocess(text):
     stop_words = set(stopwords.words('english'))
     text = [ps.stem(word) for word in text if word not in stop_words]
     return ' '.join(text)
+
+def audit_log(action, user_id, details=''):
+    if not db: return
+    try:
+        db.collection('audit_logs').add({
+            'action': action, 'user_id': user_id,
+            'username': session.get('username', 'unknown'),
+            'details': details, 'timestamp': firestore.SERVER_TIMESTAMP
+        })
+    except Exception:
+        pass
 
 def predict_job(description, qualifications):
     combined_text = (description or "") + " " + (qualifications or "")
@@ -464,6 +532,24 @@ def validate_job_url(url):
             result['label'] = 'legit'
             return result
 
+    # Check domain_rules (whitelist/blacklist from admin)
+    if db:
+        try:
+            for rule in db.collection('domain_rules').where('domain', '==', base_domain).limit(1).stream():
+                action = rule.to_dict().get('action', '')
+                if action == 'allow':
+                    result['trusted'] = True; result['risk_level'] = 'low'
+                    result['reason'] = f'Admin-whitelisted domain ({base_domain})'
+                    result['label'] = 'legit'
+                    return result
+                elif action == 'block':
+                    result['trusted'] = False; result['risk_level'] = 'high'
+                    result['reason'] = f'Admin-blacklisted domain ({base_domain})'
+                    result['label'] = 'fake'
+                    return result
+        except Exception:
+            pass
+
     result['risk_level'] = 'medium'
     result['trusted'] = False
     result['reason'] = f'Domain "{base_domain}" is not in the trusted list. Verify manually.'
@@ -486,6 +572,77 @@ def validate_url_route():
     })
     return vresult
 
+
+@app.route('/bulk-url-check')
+@login_required
+def bulk_url_check_page():
+    return render_template('bulk_url_check.html', username=session.get('username', 'User'))
+
+@app.route('/bulk-validate', methods=['POST'])
+@login_required
+def bulk_validate():
+    urls_text = request.form.get('urls', '').strip()
+    lines = [l.strip() for l in urls_text.split('\n') if l.strip()]
+    results = []
+    for url in lines:
+        vr = validate_job_url(url)
+        db.collection('url_checks').add({
+            'user_id': session['user_id'], 'url': url,
+            'result': vr['label'], 'risk_level': vr['risk_level'],
+            'reason': vr['reason'], 'created_at': firestore.SERVER_TIMESTAMP
+        })
+        results.append({'url': url, 'label': vr['label'], 'risk_level': vr['risk_level'], 'reason': vr['reason']})
+    audit_log('bulk_validate', session['user_id'], f'Validated {len(results)} URLs')
+    return {'results': results, 'count': len(results)}
+
+@app.route('/feedback', methods=['POST'])
+@login_required
+def feedback():
+    doc_type = request.form.get('type', '')
+    doc_id = request.form.get('doc_id', '')
+    correct = request.form.get('correct', 'true') == 'true'
+    col = 'job_ads' if doc_type == 'pdf' else 'url_checks'
+    doc = db.collection(col).document(doc_id).get()
+    if doc.exists and doc.to_dict().get('user_id') == session['user_id']:
+        db.collection('feedback').add({
+            'user_id': session['user_id'], 'doc_type': doc_type, 'doc_id': doc_id,
+            'original_result': doc.to_dict().get('result', ''),
+            'marked_correct': correct, 'timestamp': firestore.SERVER_TIMESTAMP
+        })
+        audit_log('feedback', session['user_id'], f'Marked {doc_type}/{doc_id} as {"correct" if correct else "incorrect"}')
+        return {'status': 'ok'}
+    return {'status': 'error', 'msg': 'Not found or not yours'}, 404
+
+@app.route('/api/validate-url', methods=['POST'])
+def api_validate_url():
+    api_key = request.headers.get('X-API-Key', '')
+    if not api_key or not db:
+        return jsonify({'error': 'Invalid API key'}), 403
+    users = list(db.collection('users').where('api_key', '==', api_key).limit(1).stream())
+    if not users:
+        return jsonify({'error': 'Invalid API key'}), 403
+    uid = users[0].id
+    data = request.get_json(silent=True) or request.form
+    url = data.get('url', '')
+    if not url:
+        return jsonify({'error': 'url parameter required'}), 400
+    vr = validate_job_url(url)
+    db.collection('url_checks').add({
+        'user_id': uid, 'url': url, 'result': vr['label'],
+        'risk_level': vr['risk_level'], 'reason': vr['reason'],
+        'api_call': True, 'created_at': firestore.SERVER_TIMESTAMP
+    })
+    return jsonify(vr)
+
+@app.route('/profile/api-key', methods=['POST'])
+@login_required
+def generate_api_key():
+    import secrets
+    api_key = 'jfd_' + secrets.token_hex(20)
+    db.collection('users').document(session['user_id']).update({'api_key': api_key})
+    audit_log('api_key_generated', session['user_id'], 'Generated new API key')
+    flash('API key generated! Keep it secret.', 'success')
+    return redirect('/profile')
 
 @app.route('/admin')
 @login_required
@@ -557,12 +714,13 @@ def admin_delete(doc_type, doc_id):
             filename = doc.to_dict().get('filename', '')
             doc_ref.delete()
             path = os.path.join('static/uploads', filename)
-            if os.path.exists(path):
-                os.remove(path)
+            if os.path.exists(path): os.remove(path)
+            audit_log('admin_delete', session['user_id'], f'Deleted PDF {filename} (admin)')
     elif doc_type == 'url':
         doc_ref = db.collection('url_checks').document(doc_id)
         if doc_ref.get().exists:
             doc_ref.delete()
+            audit_log('admin_delete', session['user_id'], f'Deleted URL check (admin)')
     flash("Record deleted.", "success")
     return redirect('/admin')
 
@@ -690,7 +848,6 @@ def admin_jobs():
 @login_required
 @permission_required('export_data')
 def admin_export():
-    import csv, io
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(['Type', 'User', 'Filename/URL', 'Result', 'Reason', 'Date'])
@@ -705,13 +862,63 @@ def admin_export():
             d = doc.to_dict()
             writer.writerow(['URL', users.get(d.get('user_id', ''), ''), d.get('url', ''),
                 d.get('result', ''), d.get('reason', ''), str(d.get('created_at', ''))])
-    from flask import Response
     return Response(
         output.getvalue(),
         mimetype='text/csv',
         headers={'Content-Disposition': 'attachment;filename=job_fraud_export.csv'}
     )
 
+@app.route('/admin/domains', methods=['GET', 'POST'])
+@login_required
+@permission_required('manage_settings')
+def admin_domains():
+    if request.method == 'POST':
+        domain = request.form.get('domain', '').strip().lower()
+        action = request.form.get('action', 'allow')
+        if domain:
+            existing = list(db.collection('domain_rules').where('domain', '==', domain).limit(1).stream())
+            if not existing:
+                db.collection('domain_rules').add({
+                    'domain': domain, 'action': action,
+                    'created_by': session['user_id'],
+                    'created_at': firestore.SERVER_TIMESTAMP
+                })
+                audit_log('domain_added', session['user_id'], f'{action} domain: {domain}')
+                flash(f'Domain {domain} added to {action} list.', 'success')
+        return redirect('/admin/domains')
+    rules = [{'id': d.id, **d.to_dict()} for d in db.collection('domain_rules').stream()] if db else []
+    return render_template('admin_domains.html', rules=rules, username=session.get('username', 'Admin'))
+
+@app.route('/admin/domains/delete/<rule_id>')
+@login_required
+@permission_required('manage_settings')
+def admin_delete_domain(rule_id):
+    db.collection('domain_rules').document(rule_id).delete()
+    audit_log('domain_deleted', session['user_id'], f'Deleted domain rule {rule_id}')
+    flash('Domain rule deleted.', 'success')
+    return redirect('/admin/domains')
+
+@app.route('/admin/audit-logs')
+@login_required
+@permission_required('view_audit_logs')
+def admin_audit_logs():
+    if not db: return render_template('admin_audit_logs.html', logs=[])
+    logs = []
+    try:
+        for doc in db.collection('audit_logs').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(200).stream():
+            d = doc.to_dict()
+            logs.append({
+                'action': d.get('action', ''), 'username': d.get('username', ''),
+                'details': d.get('details', ''), 'timestamp': str(d.get('timestamp', ''))
+            })
+    except Exception:
+        for doc in db.collection('audit_logs').limit(200).stream():
+            d = doc.to_dict()
+            logs.append({
+                'action': d.get('action', ''), 'username': d.get('username', ''),
+                'details': d.get('details', ''), 'timestamp': str(d.get('timestamp', ''))
+            })
+    return render_template('admin_audit_logs.html', logs=logs, username=session.get('username', 'Admin'))
 
 if __name__ == '__main__':
     app.run(debug=False)

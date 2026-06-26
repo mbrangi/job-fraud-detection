@@ -21,7 +21,12 @@
       </a>
     </li>
 
-    <li class="nav-item"></li>
+    <li class="nav-item">
+      <a class="nav-link" href="/profile">
+        <i class="fa fa-user menu-icon"></i>
+        <span class="menu-title">My Profile</span>
+      </a>
+    </li>
     <li class="nav-item">
       <a
         class="nav-link"
@@ -38,6 +43,9 @@
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
             <a class="nav-link" href="/predict">Validate Job Advertisements</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/bulk-url-check">Bulk URL Check</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/history">My upload history</a>
@@ -58,6 +66,8 @@
           {% if 'view_users' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/users">Users</a></li>{% endif %}
           {% if 'manage_roles' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/permissions">Permissions</a></li>{% endif %}
           {% if 'view_jobs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/jobs">Records</a></li>{% endif %}
+          {% if 'manage_settings' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/domains">Domains</a></li>{% endif %}
+          {% if 'view_audit_logs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/audit-logs">Audit Logs</a></li>{% endif %}
           {% if 'export_data' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/export">Export</a></li>{% endif %}
         </ul>
       </div>

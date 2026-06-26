@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Bulk URL Check - Job Fraud Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container-scroller">
+    {% include 'header.html' %}
+    <div class="container-fluid page-body-wrapper">
+      {% include 'sidebar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}</div>
+          {% endfor %}{% endif %}{% endwith %}
+
+          <div class="page-header">
+            <h3 class="page-title">Bulk URL Check</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
+                <li class="breadcrumb-item active">Bulk URL Check</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Paste URLs to Validate</h4>
+                  <p>One URL per line. All results will be saved to your history.</p>
+                  <div class="form-group">
+                    <textarea class="form-control" id="urlsInput" rows="8" placeholder="https://example.com/job/1&#10;https://linkedin.com/jobs/123&#10;https://bit.ly/suspicious-link"></textarea>
+                  </div>
+                  <button class="btn btn-primary" id="bulkBtn" onclick="bulkCheck()">Validate All URLs</button>
+                  <div id="bulkSpinner" class="mt-3" style="display:none;">
+                    <div class="spinner-border text-primary" role="status"></div> Processing...
+                  </div>
+                  <div id="bulkResults" class="mt-4" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted">Copyright &copy; 2026</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/off-canvas.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script>
+    async function bulkCheck() {
+      const btn = document.getElementById('bulkBtn');
+      const spinner = document.getElementById('bulkSpinner');
+      const resultsDiv = document.getElementById('bulkResults');
+      const urls = document.getElementById('urlsInput').value.trim();
+      if (!urls) { alert('Paste at least one URL.'); return; }
+      btn.disabled = true;
+      spinner.style.display = 'block';
+      resultsDiv.style.display = 'none';
+      try {
+        const fd = new FormData();
+        fd.append('urls', urls);
+        const res = await fetch('/bulk-validate', { method: 'POST', body: fd });
+        const data = await res.json();
+        let html = '<div class="table-responsive"><table class="table table-sm"><thead><tr><th>#</th><th>URL</th><th>Result</th><th>Risk</th><th>Reason</th></tr></thead><tbody>';
+        data.results.forEach((r, i) => {
+          const cls = r.label === 'fake' ? 'danger' : r.label === 'legit' ? 'success' : 'warning';
+          const riskCls = r.risk_level === 'high' ? 'danger' : r.risk_level === 'low' ? 'success' : 'warning';
+          html += `<tr><td>${i+1}</td><td style="word-break:break-all;max-width:250px;">${r.url}</td><td><span class="alert alert-${cls}" style="padding:2px 8px;font-size:11px;">${r.label.toUpperCase()}</span></td><td><span class="badge badge-${riskCls}">${r.risk_level}</span></td><td>${r.reason}</td></tr>`;
+        });
+        html += '</tbody></table><p class="mt-2 text-muted">Checked ' + data.count + ' URL(s). Saved to history.</p></div>';
+        resultsDiv.innerHTML = html;
+        resultsDiv.style.display = 'block';
+      } catch (err) {
+        resultsDiv.innerHTML = '<div class="alert alert-danger">Error: ' + err.message + '</div>';
+        resultsDiv.style.display = 'block';
+      }
+      spinner.style.display = 'none';
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>
