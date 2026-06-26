@@ -4,7 +4,7 @@ flask-bcrypt
 firebase-admin
 joblib
 pandas
-scikit-learn
+scikit-learn==1.5.2
 numpy
 gunicorn
 pdfplumber
