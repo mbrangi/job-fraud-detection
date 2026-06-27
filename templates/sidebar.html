@@ -222,6 +222,9 @@
 
 /* Push main content when sidebar opens (desktop) */
 @media (min-width: 769px) {
+  .main-panel {
+    width: 100% !important;
+  }
   body.sidebar-open .main-panel {
     margin-left: var(--nav-width);
     transition: margin-left var(--nav-transition);

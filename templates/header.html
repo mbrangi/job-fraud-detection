@@ -88,6 +88,21 @@
 </footer>
 
 <style>
+.navbar-brand-wrapper .navbar-brand img {
+  border-radius: 50%;
+  height: 38px;
+  width: 38px;
+  object-fit: cover;
+  transition: transform 0.2s;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+}
+.navbar-brand-wrapper .navbar-brand img:hover {
+  transform: scale(1.08);
+}
+.navbar-brand-wrapper .navbar-brand.brand-logo-mini img {
+  height: 34px;
+  width: 34px;
+}
 .dark-mode, .dark-mode .container-scroller { background: #1a1a2e; color: #e0e0e0; }
 .dark-mode .card { background: #16213e; border-color: #0f3460; color: #e0e0e0; }
 .dark-mode .card .card-title { color: #e0e0e0; }
