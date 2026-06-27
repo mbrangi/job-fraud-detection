@@ -1,26 +1,279 @@
-<!-- partial -->
-<!-- partial:partials/_sidebar.html -->
-<nav class="sidebar sidebar-offcanvas" id="sidebar">
-  <ul class="nav">
-    <li class="nav-item nav-profile">
-      <div class="nav-link">
-        <div class="profile-name">
-          <p> {% if 'username' in session %}
-            <p class="name">Welcome, {{ session['username'] }}!</p>
-        {% else %}
-            <p>Please <a href="/">login</a>.</p>
-        {% endif %}</p>
-          <p class="designation"></p>
-        </div>
-      </div>
-    </li>
+<style>
+:root {
+  --nav-width: 260px;
+  --tab-width: 40px;
+  --nav-primary: #667eea;
+  --nav-dark: #1a1a2e;
+  --nav-darker: #16213e;
+  --nav-accent: #0f3460;
+  --nav-text: #c0c0d0;
+  --nav-text-active: #ffffff;
+  --nav-transition: 0.30s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tab button on left edge */
+#nav-toggle {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 1002;
+  width: var(--tab-width);
+  height: 52px;
+  background: linear-gradient(135deg, var(--nav-primary) 0%, #764ba2 100%);
+  border: none;
+  border-radius: 0 10px 10px 0;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
+  transition: left var(--nav-transition);
+  border-left: none;
+}
+#nav-toggle:hover {
+  background: linear-gradient(135deg, #5a6fd6 0%, #6a4198 100%);
+  transform: translateY(-50%) scale(1.05);
+}
+#nav-toggle i {
+  transition: transform 0.35s ease;
+  font-size: 18px;
+}
+#nav-toggle.open {
+  left: var(--nav-width);
+}
+#nav-toggle.open i {
+  transform: rotate(180deg);
+}
+
+/* Sidebar panel */
+.sidebar-left {
+  position: fixed;
+  top: 0;
+  left: calc(-1 * var(--nav-width) - 8px);
+  width: var(--nav-width);
+  height: 100vh;
+  z-index: 1001;
+  background: linear-gradient(180deg, var(--nav-dark) 0%, var(--nav-darker) 100%);
+  color: var(--nav-text);
+  transition: left var(--nav-transition);
+  box-shadow: 4px 0 30px rgba(0,0,0,0.4);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-left.open {
+  left: 0;
+}
+
+/* Close button inside sidebar */
+.sidebar-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  border-radius: 8px;
+  color: var(--nav-text);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.sidebar-close:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+/* Profile section */
+.sidebar-profile {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.sidebar-profile .welcome-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 4px;
+}
+.sidebar-profile .username {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Nav items */
+.sidebar-nav {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  flex: 1;
+}
+.sidebar-nav .nav-item {
+  margin: 2px 8px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.sidebar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  padding: 11px 14px;
+  color: var(--nav-text);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-size: 14px;
+  gap: 12px;
+}
+.sidebar-nav .nav-link:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--nav-text-active);
+}
+.sidebar-nav .nav-link .menu-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--nav-primary);
+  flex-shrink: 0;
+}
+.sidebar-nav .nav-link .menu-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-nav .nav-link .menu-arrow {
+  font-size: 11px;
+  transition: transform 0.25s;
+  color: rgba(255,255,255,0.3);
+}
+.sidebar-nav .nav-link[aria-expanded="true"] .menu-arrow {
+  transform: rotate(90deg);
+}
+
+/* Sub-menu */
+.sidebar-nav .sub-menu {
+  list-style: none;
+  padding: 0 0 4px 0;
+  margin: 0;
+  background: transparent;
+}
+.sidebar-nav .sub-menu .nav-link {
+  padding-left: 46px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+}
+.sidebar-nav .sub-menu .nav-link:hover {
+  color: var(--nav-text-active);
+  background: rgba(255,255,255,0.05);
+}
+
+/* Logout item */
+.sidebar-nav .nav-logout {
+  margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 8px;
+}
+.sidebar-nav .nav-logout .nav-link {
+  color: #e57373;
+}
+.sidebar-nav .nav-logout .nav-link .menu-icon {
+  color: #e57373;
+}
+
+/* Overlay */
+#sidebar-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  display: none;
+}
+#sidebar-overlay.show {
+  display: block;
+}
+
+/* Scrollbar styling */
+.sidebar-left::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-left::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-left::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 4px;
+}
+
+/* Push main content when sidebar opens (desktop) */
+@media (min-width: 769px) {
+  body.sidebar-open .main-panel {
+    margin-left: var(--nav-width);
+    transition: margin-left var(--nav-transition);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  #nav-toggle.open {
+    left: calc(100% - var(--tab-width) - 8px);
+  }
+  .sidebar-left {
+    width: min(85vw, 300px);
+    left: calc(-1 * min(85vw, 300px) - 8px);
+  }
+}
+
+/* Dark mode overrides within sidebar */
+.dark-mode .sidebar-left {
+  background: linear-gradient(180deg, #0d0d1a 0%, #111827 100%);
+}
+</style>
+
+<div id="sidebar-overlay" onclick="toggleNav()"></div>
+
+<button id="nav-toggle" onclick="toggleNav()" title="Toggle Navigation" aria-label="Toggle navigation menu">
+  <i class="fas fa-chevron-right"></i>
+</button>
+
+<nav class="sidebar-left" id="sidebar-left">
+  <button class="sidebar-close" onclick="toggleNav()" title="Close menu" aria-label="Close navigation menu">
+    <i class="fas fa-times"></i>
+  </button>
+
+  <div class="sidebar-profile">
+    <div class="welcome-label">Welcome</div>
+    <div class="username">
+      {% if 'username' in session %}
+        {{ session['username'] }}
+      {% else %}
+        Guest
+      {% endif %}
+    </div>
+  </div>
+
+  <ul class="sidebar-nav">
     <li class="nav-item">
       <a class="nav-link" href="/home">
         <i class="fa fa-home menu-icon"></i>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
-
     <li class="nav-item">
       <a class="nav-link" href="/profile">
         <i class="fa fa-user menu-icon"></i>
@@ -28,37 +281,25 @@
       </a>
     </li>
     <li class="nav-item">
-      <a
-        class="nav-link"
-        data-toggle="collapse"
-        href="#sidebar-layouts"
-        aria-expanded="false"
-        aria-controls="sidebar-layouts"
-      >
+      <a class="nav-link collapsed" data-toggle="collapse" href="#sidebar-layouts" aria-expanded="false" aria-controls="sidebar-layouts">
         <i class="fas fa-columns menu-icon"></i>
         <span class="menu-title">Prediction Menu</span>
-        <i class="menu-arrow"></i>
+        <i class="fas fa-chevron-right menu-arrow"></i>
       </a>
       <div class="collapse" id="sidebar-layouts">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item">
-            <a class="nav-link" href="/predict">Validate Job Advertisements</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/bulk-url-check">Bulk URL Check</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/history">My upload history</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="/predict">Validate Job Ads</a></li>
+          <li class="nav-item"><a class="nav-link" href="/bulk-url-check">Bulk URL Check</a></li>
+          <li class="nav-item"><a class="nav-link" href="/history">My Upload History</a></li>
         </ul>
       </div>
     </li>
     {% if is_admin %}
     <li class="nav-item">
-      <a class="nav-link" data-toggle="collapse" href="#sidebar-admin" aria-expanded="false" aria-controls="sidebar-admin">
+      <a class="nav-link collapsed" data-toggle="collapse" href="#sidebar-admin" aria-expanded="false" aria-controls="sidebar-admin">
         <i class="fa fa-shield-alt menu-icon"></i>
         <span class="menu-title">Admin Panel</span>
-        <i class="menu-arrow"></i>
+        <i class="fas fa-chevron-right menu-arrow"></i>
       </a>
       <div class="collapse" id="sidebar-admin">
         <ul class="nav flex-column sub-menu">
@@ -73,7 +314,7 @@
       </div>
     </li>
     {% endif %}
-    <li class="nav-item">
+    <li class="nav-item nav-logout">
       <a class="nav-link" href="{{ url_for('logout') }}">
         <i class="fa fa-sign-out-alt menu-icon"></i>
         <span class="menu-title">Logout</span>
@@ -81,4 +322,22 @@
     </li>
   </ul>
 </nav>
-<!-- partial -->
+
+<script>
+function toggleNav() {
+  var sidebar = document.getElementById('sidebar-left');
+  var toggle = document.getElementById('nav-toggle');
+  var overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  toggle.classList.toggle('open');
+  overlay.classList.toggle('show');
+  document.body.classList.toggle('sidebar-open');
+}
+
+// Close sidebar on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('sidebar-left').classList.contains('open')) {
+    toggleNav();
+  }
+});
+</script>
