@@ -1,8 +1,12 @@
 <!-- partial:partials/_navbar.html -->
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
   <div class="navbar-brand-wrapper d-flex align-items-center justify-content-between">
-    <a class="navbar-brand brand-logo" href="/home">Job Fraud Detection</a>
-    <a class="navbar-brand brand-logo-mini" href="/home">JFD</a>
+    <a class="navbar-brand brand-logo" href="/home">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" style="height:40px;">
+    </a>
+    <a class="navbar-brand brand-logo-mini" href="/home">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" style="height:35px;">
+    </a>
   </div>
   <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
     <button class="btn btn-sm btn-link text-white mr-2" onclick="toggleDarkMode()" title="Toggle Dark Mode">
