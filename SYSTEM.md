@@ -1,18 +1,20 @@
-# Job Advertisement Fraud Detection System
+# An Intelligent Fake Job Advertisement Detection System
 
 ## System Documentation
 
 ---
 
-## 1. Objective
+## 1. Objectives
 
 The primary objective of this system is to **automatically detect fraudulent job advertisements** by analyzing both PDF job postings and job application URLs. The system uses **Machine Learning (NLP)** and **URL reputation analysis** to classify listings as **Fake**, **Legit**, or **Invalid**, helping job seekers and organizations avoid recruitment scams.
 
 ### Key Goals
-- Reduce exposure to job advertisement fraud and phishing
-- Provide real-time, automated validation of job postings
-- Centralize per-user validation history with detailed analytics
-- Enable administrators to manage users, permissions, and domain rules
+- **Reduce exposure to job advertisement fraud and phishing** — protect job seekers by flagging suspicious listings in real time
+- **Provide real-time, automated validation of job postings** — instant classification of PDF ads and job URLs
+- **Centralize per-user validation history with detailed analytics** — each user maintains a record of every check with visual trends
+- **Enable administrators to manage users, permissions, and domain rules** — full admin panel with role-based access control
+- **Build a detection and reporting sub-system** — alert users to fraudulent ads and generate summary reports for administrators
+- **Compare and evaluate competing ML models** — benchmark multiple classifiers (e.g. Logistic Regression, Random Forest, SVM, Neural Networks) on a combined English–Swahili dataset to select the best-performing model for deployment
 
 ---
 
@@ -21,6 +23,8 @@ The primary objective of this system is to **automatically detect fraudulent job
 ### In Scope
 - PDF job advertisement upload and ML-based text classification
 - Job application URL validation with multi-layered checks (HTTPS, domain reputation, suspicious patterns)
+- **Bilingual data sources: English and Swahili job advertisements collected independently (not machine-translated)**
+- **Model evaluation and selection: comparison of multiple classifiers (Logistic Regression, Random Forest, SVM, Neural Network) on English–Swahili data to identify the best performer**
 - Per-user dashboard with aggregated statistics (Fake/Legit/Invalid counts, weekly trend chart)
 - Upload and URL check history with search, sort, and delete
 - User registration and login via email or username (Firebase Authentication)
@@ -28,6 +32,7 @@ The primary objective of this system is to **automatically detect fraudulent job
 - Dark mode toggle with persistent preference (localStorage)
 - Bulk URL validation (paste multiple URLs at once)
 - Feedback system — users can mark predictions as correct or incorrect
+- **Detection and reporting sub-system — flag fraudulent ads, notify users, generate admin reports**
 - Admin panel with role-based permissions (20 distinct permissions)
 - User management (list, delete users and their records)
 - Permission management (assign/revoke permissions, super admin toggle)
@@ -41,7 +46,6 @@ The primary objective of this system is to **automatically detect fraudulent job
 ### Out of Scope
 - Mobile native application (Flutter/React Native)
 - Integration with external threat intelligence APIs (Google Safe Browsing, VirusTotal)
-- Multi-language support for non-English job ads
 - Real-time email/SMS notifications
 - Automated PDF parsing for structured data extraction (salary, location, etc.)
 

@@ -1,4 +1,4 @@
-# Job Advertisement Fraud Detection System
+# An Intelligent Fake Job Advertisement Detection System
 
 ## Proposal Document
 
@@ -6,7 +6,7 @@
 
 ### 1. Executive Summary
 
-This project proposes the development of a **Job Advertisement Fraud Detection System** — a web-based platform that uses Machine Learning (NLP) and URL validation to automatically detect fraudulent job advertisements. The system analyzes both PDF job postings and job application URLs, classifying them as **Fake**, **Legit**, or **Invalid** to help job seekers and organizations identify recruitment scams.
+This project proposes the development of an **Intelligent Fake Job Advertisement Detection System** — a web-based platform that uses Machine Learning (NLP) and URL validation to automatically detect fraudulent job advertisements. The system analyzes both PDF job postings and job application URLs, classifying them as **Fake**, **Legit**, or **Invalid** to help job seekers and organizations identify recruitment scams. The system is trained on a **bilingual English–Swahili dataset** (independently collected, not machine-translated) and includes a **detection and reporting sub-system** for alerting users and generating admin reports.
 
 ---
 
@@ -46,7 +46,18 @@ A web-based application with three core capabilities:
   - **Unknown domain flagging** for manual review
 - Returns: **Label** (Fake / Legit / Invalid), **Risk Level** (Low / Medium / High), and a human-readable reason
 
-#### 3.3 User Dashboard & History
+##### 3.3 Detection and Reporting Sub-system
+- Flagged fraudulent ads trigger alerts on the user dashboard
+- Admin-generated summary reports showing fraud trends, top-flagged domains, and user feedback analytics
+- Email notifications (future) for critical detections
+
+#### 3.4 Model Evaluation and Selection
+- Multiple classifiers are benchmarked on the bilingual English–Swahili dataset:
+  - **Logistic Regression**, **Random Forest**, **Support Vector Machine (SVM)**, **Neural Network (TensorFlow/Keras)**
+- Performance metrics: accuracy, precision, recall, F1-score
+- The best-performing model is deployed in production
+
+#### 3.5 User Dashboard & History
 - **Firebase Authentication** for secure login/registration (email + username)
 - **Firestore** database for per-user data storage
 - Dashboard displays aggregated statistics (Fake, Legit, Invalid counts with chart)
@@ -93,16 +104,18 @@ User Browser
 
 ### 6. Machine Learning Pipeline
 
-1. **Text Extraction**: PDF text is extracted using pdfplumber
-2. **Preprocessing**:
+1. **Data Sources**: Bilingual dataset combining independently collected **English** and **Swahili** job advertisements (not machine-translated)
+2. **Text Extraction**: PDF text is extracted using pdfplumber
+3. **Preprocessing**:
    - Remove non-alphabetic characters
    - Convert to lowercase
    - Tokenize
-   - Remove English stopwords
+   - Remove English and Swahili stopwords
    - Apply Porter Stemming
-3. **Feature Encoding**: One-hot encoding with vocabulary size of 5000
-4. **Padding**: Sequences padded to a maximum length of 40 tokens
-5. **Classification**: Neural network model predicts Fake (1) vs Legit (0)
+4. **Feature Encoding**: One-hot encoding with vocabulary size of 5000
+5. **Padding**: Sequences padded to a maximum length of 40 tokens
+6. **Model Selection**: Multiple classifiers (Logistic Regression, Random Forest, SVM, Neural Network) are evaluated on the bilingual dataset; the best performer is deployed
+7. **Classification**: Selected model predicts Fake (1) vs Legit (0)
 
 ---
 
@@ -149,11 +162,11 @@ All data is scoped per user via Firebase Authentication UID.
 - Email notification alerts when suspicious job ads are detected
 - Bulk PDF upload and processing
 - Mobile application (Flutter/React Native)
-- Admin panel for reviewing flagged content
-- Multi-language support for non-English job ads
+- Expansion to additional languages (French, Arabic, Portuguese)
+- Real-time SMS alerts for critical fraud detections
 
 ---
 
 ### 11. Conclusion
 
-This Job Advertisement Fraud Detection System combines **Machine Learning** and **URL reputation analysis** to provide a comprehensive tool against recruitment fraud. By accepting both PDF documents and job URLs, it covers the two primary channels through which fraudulent job ads reach applicants, with all data securely stored per user via Firebase.
+This **Intelligent Fake Job Advertisement Detection System** combines **Machine Learning** and **URL reputation analysis** to provide a comprehensive tool against recruitment fraud. By accepting both PDF documents and job URLs, it covers the two primary channels through which fraudulent job ads reach applicants, with all data securely stored per user via Firebase.
