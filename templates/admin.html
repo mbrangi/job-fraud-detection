@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Admin - Job Fraud Detection</title>
+  <title>{{ t('admin_dashboard') }} - {{ t('app_name') }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
@@ -22,10 +22,10 @@
           {% endfor %}{% endif %}{% endwith %}
 
           <div class="page-header">
-            <h3 class="page-title">Admin Dashboard</h3>
+            <h3 class="page-title">{{ t('admin_dashboard') }}</h3>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item active">Dashboard</li>
+                <li class="breadcrumb-item active">{{ t('dashboard') }}</li>
               </ol>
             </nav>
           </div>
@@ -36,23 +36,23 @@
                 <div class="card-body">
                   <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                     <div class="statistics-item">
-                      <p><i class="icon-sm fa fa-users mr-2"></i>Total Users</p>
+                      <p><i class="icon-sm fa fa-users mr-2"></i>{{ t('total_users') }}</p>
                       <h2>{{ total_users }}</h2>
                     </div>
                     <div class="statistics-item">
-                      <p><i class="icon-sm fa fa-file mr-2"></i>Total Records</p>
+                      <p><i class="icon-sm fa fa-file mr-2"></i>{{ t('total_records') }}</p>
                       <h2>{{ total_records }}</h2>
                     </div>
                     <div class="statistics-item">
-                      <p><i class="icon-sm fas fa-hourglass-half mr-2"></i>Fake</p>
+                      <p><i class="icon-sm fas fa-hourglass-half mr-2"></i>{{ t('fake') }}</p>
                       <h2>{{ fake_count }}</h2>
                     </div>
                     <div class="statistics-item">
-                      <p><i class="icon-sm fas fa-cloud-download-alt mr-2"></i>Legit</p>
+                      <p><i class="icon-sm fas fa-cloud-download-alt mr-2"></i>{{ t('legit') }}</p>
                       <h2>{{ legit_count }}</h2>
                     </div>
                     <div class="statistics-item">
-                      <p><i class="icon-sm fas fa-exclamation-triangle mr-2"></i>Invalid</p>
+                      <p><i class="icon-sm fas fa-exclamation-triangle mr-2"></i>{{ t('invalid') }}</p>
                       <h2>{{ invalid_count }}</h2>
                     </div>
                   </div>
@@ -64,10 +64,10 @@
           <div class="row mb-4">
             <div class="col-12">
               <div class="d-flex flex-wrap gap-2">
-                {% if 'view_users' in user_permissions %}<a href="/admin/users" class="btn btn-outline-primary btn-sm m-1">Manage Users</a>{% endif %}
-                {% if 'manage_roles' in user_permissions %}<a href="/admin/permissions" class="btn btn-outline-info btn-sm m-1">Permissions</a>{% endif %}
-                {% if 'view_jobs' in user_permissions %}<a href="/admin/jobs" class="btn btn-outline-secondary btn-sm m-1">All Records</a>{% endif %}
-                {% if 'export_data' in user_permissions %}<a href="/admin/export" class="btn btn-outline-success btn-sm m-1">Export CSV</a>{% endif %}
+                {% if 'view_users' in user_permissions %}<a href="/admin/users" class="btn btn-outline-primary btn-sm m-1">{{ t('manage_users') }}</a>{% endif %}
+                {% if 'manage_roles' in user_permissions %}<a href="/admin/permissions" class="btn btn-outline-info btn-sm m-1">{{ t('permissions') }}</a>{% endif %}
+                {% if 'view_jobs' in user_permissions %}<a href="/admin/jobs" class="btn btn-outline-secondary btn-sm m-1">{{ t('all_records') }}</a>{% endif %}
+                {% if 'export_data' in user_permissions %}<a href="/admin/export" class="btn btn-outline-success btn-sm m-1">{{ t('export_csv') }}</a>{% endif %}
               </div>
             </div>
           </div>
@@ -76,17 +76,17 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Per-User Statistics</h4>
+                  <h4 class="card-title">{{ t('per_user_stats') }}</h4>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
                         <tr>
-                          <th>User</th>
+                          <th>{{ t('user') }}</th>
                           <th>PDFs</th>
                           <th>URLs</th>
-                          <th>Fake</th>
-                          <th>Legit</th>
-                          <th>Invalid</th>
+                          <th>{{ t('fake') }}</th>
+                          <th>{{ t('legit') }}</th>
+                          <th>{{ t('invalid') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -112,18 +112,18 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">All Records</h4>
+                  <h4 class="card-title">{{ t('all_records') }}</h4>
                   <div class="table-responsive">
                     <table id="admin-listing" class="table">
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>User</th>
-                          <th>Type</th>
-                          <th>File / URL</th>
-                          <th>Result</th>
-                          <th>Reason</th>
-                          <th>Action</th>
+                          <th>{{ t('user') }}</th>
+                          <th>{{ t('type') }}</th>
+                          <th>{{ t('file_url') }}</th>
+                          <th>{{ t('result') }}</th>
+                          <th>{{ t('reason') }}</th>
+                          <th>{{ t('action') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -141,8 +141,8 @@
                           <td>{{ record.reason }}</td>
                           <td>
                             <a href="{{ url_for('admin_delete', doc_type=record.type, doc_id=record.id) }}"
-                               onclick="return confirm('Delete this record?');">
-                              <button class="badge badge-danger badge-pill">Delete</button>
+                               onclick="return confirm('{{ t('delete_record') }}');">
+                              <button class="badge badge-danger badge-pill">{{ t('delete') }}</button>
                             </a>
                           </td>
                         </tr>
@@ -173,7 +173,7 @@
     $(function() {
       $('#admin-listing').DataTable({
         responsive: true,
-        "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+        "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "{{ t('all') }}"]],
         "iDisplayLength": 10,
         "language": { search: "" },
         columnDefs: [
