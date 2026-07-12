@@ -410,19 +410,66 @@ def extract_text_from_pdf(path):
         flash(f"Error reading PDF: {str(e)}", "danger")
         return ""
 
+SWAHILI_STOPWORDS = {
+    'na', 'ya', 'wa', 'kwa', 'ni', 'katika', 'la', 'za', 'kutoka', 'hii',
+    'hiyo', 'huo', 'hizo', 'hizi', 'watu', 'kama', 'kwa', 'mara', 'pia',
+    'kwenye', 'kwa', 'au', 'lakini', 'bado', 'si', 'wala', 'hata', 'kila',
+    'baada', 'kabla', 'zaidi', 'kati', 'hadi', 'tangu', 'mpaka', 'ndani',
+    'nje', 'juu', 'chini', 'mbele', 'nyuma', 'sana', 'kidogo', 'kubwa',
+    'ndogo', 'moja', 'mbili', 'tatu', 'nne', 'tano', 'sita', 'saba',
+    'nane', 'tisa', 'kumi', 'hivyo', 'vile', 'hao', 'hayao', 'hiyoo',
+    'ambao', 'ambayo', 'ambacho', 'ambalo', 'ambazo', 'ambazo', 'ambawo',
+    'wake', 'zake', 'lake', 'yake', 'chake', 'vyake', 'mzuri', 'zuri',
+    'nzuri', 'wangu', 'zangu', 'langu', 'yangu', 'changu', 'vyangu',
+    'yetu', 'wetu', 'zetu', 'letu', 'chetu', 'vyetu', 'enu', 'wenu',
+    'zenu', 'lenu', 'chenu', 'vyenu', 'ao', 'wao', 'zao', 'lao', 'yao',
+    'chao', 'vyao', 'mimi', 'wewe', 'yeye', 'sisi', 'nyinyi', 'wao',
+    'huu', 'hili', 'haya', 'huku', 'huko', 'humu', 'huno', 'wapi',
+    'lini', 'nini', 'kitu', 'vitu', 'mtu', 'maji', 'moto', 'nyumba',
+    'kazi', 'siku', 'mwaka', 'mwezi', 'wiki', 'saa', 'dakika', 'wakati',
+    'mahali', 'njia', 'jina', 'sababu', 'matokeo', 'urahisi', 'haraka',
+    'tena', 'zaidi', 'kabisa', 'pamoja', 'pekee', 'hasa', 'karibu',
+    'mbali', 'bila', 'kupitia', 'kuelekea', 'mpaka', 'kuwa', 'kuwa',
+    'kuna', 'kuko', 'pana', 'pako', 'kumekuwa', 'kulikuwa', 'kunako',
+    'siyo', 'sio', 'ndiyo', 'ndio', 'ndilo', 'ndicho', 'siyo', 'ndiyo',
+    'kwamba', 'kwani', 'maana', 'kwasababu', 'ili', 'kisha', 'ndipo',
+    'ndiposa', 'hapo', 'pale', 'huko', 'kule', 'hapa', 'huku', 'humi',
+}
+
 def split_description_qualifications(text):
-    parts = text.split('Qualifications:')
-    description = parts[0].replace('Description:', '').strip()
-    qualifications = parts[1].strip() if len(parts) > 1 else ''
-    return description, qualifications
+    # Try English section headers
+    parts_en = text.split('Qualifications:')
+    if len(parts_en) > 1:
+        description = parts_en[0].replace('Description:', '').replace('description:', '').strip()
+        qualifications = parts_en[1].strip()
+        return description, qualifications
+    # Try Swahili section headers
+    parts_sw = text.split('Mahitaji:')
+    if len(parts_sw) > 1:
+        description = parts_sw[0].replace('Maelezo:', '').replace('maelezo:', '').strip()
+        qualifications = parts_sw[1].strip()
+        return description, qualifications
+    parts_sw2 = text.split('Sifa:')
+    if len(parts_sw2) > 1:
+        description = parts_sw2[0].replace('Maelezo:', '').replace('maelezo:', '').strip()
+        qualifications = parts_sw2[1].strip()
+        return description, qualifications
+    # No section headers found — use entire text as description
+    return text.strip(), ''
 
 def preprocess(text):
     ps = PorterStemmer()
-    text = re.sub(r'[^a-zA-Z]', ' ', text)
+    text = re.sub(r'[^a-zA-Zà-ÿ\u00C0-\u00FF]', ' ', text)
     text = text.lower().split()
-    stop_words = set(stopwords.words('english'))
-    text = [ps.stem(word) for word in text if word not in stop_words]
-    return ' '.join(text)
+    stop_words = set(stopwords.words('english')) | SWAHILI_STOPWORDS
+    result = []
+    for word in text:
+        if word not in stop_words and len(word) > 2:
+            # Try Porter stemmer; if it changes the word significantly or word seems English, use stemmed form
+            stemmed = ps.stem(word)
+            # Keep the shorter of original or stemmed to handle mixed language content
+            result.append(stemmed if len(stemmed) < len(word) else word)
+    return ' '.join(result)
 
 def audit_log(action, user_id, details=''):
     if not db: return
