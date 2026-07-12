@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Domain Rules - Admin</title>
+  <title>{{ t('domain_rules') }} - {{ t('admin') }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
@@ -21,11 +21,11 @@
           {% endfor %}{% endif %}{% endwith %}
 
           <div class="page-header">
-            <h3 class="page-title">Domain Whitelist / Blacklist</h3>
+            <h3 class="page-title">{{ t('domain_rules') }}</h3>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
-                <li class="breadcrumb-item active">Domains</li>
+                <li class="breadcrumb-item"><a href="/admin">{{ t('admin') }}</a></li>
+                <li class="breadcrumb-item active">{{ t('domains') }}</li>
               </ol>
             </nav>
           </div>
@@ -34,20 +34,20 @@
             <div class="col-md-5 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Add Domain Rule</h4>
+                  <h4 class="card-title">{{ t('add_domain_rule') }}</h4>
                   <form method="POST">
                     <div class="form-group">
-                      <label>Domain</label>
+                      <label>{{ t('domain') }}</label>
                       <input type="text" class="form-control" name="domain" placeholder="example.com" required>
                     </div>
                     <div class="form-group">
-                      <label>Action</label>
+                      <label>{{ t('action') }}</label>
                       <select class="form-control" name="action">
-                        <option value="allow">Allow (Whitelist)</option>
-                        <option value="block">Block (Blacklist)</option>
+                        <option value="allow">{{ t('allow_whitelist') }}</option>
+                        <option value="block">{{ t('block_blacklist') }}</option>
                       </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-primary">{{ t('add') }}</button>
                   </form>
                 </div>
               </div>
@@ -55,19 +55,19 @@
             <div class="col-md-7 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Existing Rules</h4>
+                  <h4 class="card-title">{{ t('existing_rules') }}</h4>
                   <div class="table-responsive">
                     <table class="table">
-                      <thead><tr><th>Domain</th><th>Action</th><th></th></tr></thead>
+                      <thead><tr><th>{{ t('domain') }}</th><th>{{ t('action') }}</th><th></th></tr></thead>
                       <tbody>
                         {% for rule in rules %}
                         <tr>
                           <td>{{ rule.domain }}</td>
                           <td><span class="badge badge-{{ 'success' if rule.action == 'allow' else 'danger' }}">{{ rule.action }}</span></td>
-                          <td><a href="{{ url_for('admin_delete_domain', rule_id=rule.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this rule?')">Delete</a></td>
+                          <td><a href="{{ url_for('admin_delete_domain', rule_id=rule.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ t('delete_rule_confirm') }}')">{{ t('delete') }}</a></td>
                         </tr>
                         {% endfor %}
-                        {% if not rules %}<tr><td colspan="3" class="text-muted">No rules added yet.</td></tr>{% endif %}
+                        {% if not rules %}<tr><td colspan="3" class="text-muted">{{ t('no_rules_yet') }}</td></tr>{% endif %}
                       </tbody>
                     </table>
                   </div>

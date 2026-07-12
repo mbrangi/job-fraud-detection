@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Fake Job Advertisements</title>
+    <title>{{ t('app_name') }}</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}" />
     <link
       rel="stylesheet"
@@ -34,9 +34,9 @@
             <div class="col-lg-4 mx-auto">
               <div class="auth-form-light text-left p-5">
                 <div class="brand-logo"></div>
-                <h4>Get Registration</h4>
+                <h4>{{ t('get_registration') }}</h4>
                 <h6 class="font-weight-light">
-                  Signing up is easy. It only takes a few steps
+                  {{ t('signing_up') }}
                 </h6>
                 {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %} {% for category, message in messages %}
@@ -99,11 +99,11 @@
                       class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
                       id="registerBtn"
                     >
-                      Register
+                      {{ t('register') }}
                     </button>
                   </div>
                   <div class="text-center mt-4 font-weight-light">
-                    <a href="/">Already have an account? Login</a>
+                    <a href="/">{{ t('has_account') }}</a>
                   </div>
                 </form>
               </div>
@@ -134,7 +134,7 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         registerBtn.disabled = true;
-        registerBtn.textContent = 'Creating account...';
+        registerBtn.textContent = '{{ t("creating_account") }}';
         registerError.classList.add('d-none');
 
         try {
@@ -163,7 +163,7 @@
           registerError.textContent = error.message;
           registerError.classList.remove('d-none');
           registerBtn.disabled = false;
-          registerBtn.textContent = 'Register';
+          registerBtn.textContent = '{{ t("register") }}';
         }
       });
     </script>

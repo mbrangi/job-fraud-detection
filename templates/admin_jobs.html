@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>All Job Posts - Admin</title>
+  <title>{{ t('all_job_posts') }} - {{ t('admin') }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
@@ -22,11 +22,11 @@
           {% endfor %}{% endif %}{% endwith %}
 
           <div class="page-header">
-            <h3 class="page-title">All Job Posts & URL Checks</h3>
+            <h3 class="page-title">{{ t('all_job_posts') }}</h3>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
-                <li class="breadcrumb-item active">Jobs</li>
+                <li class="breadcrumb-item"><a href="/admin">{{ t('admin') }}</a></li>
+                <li class="breadcrumb-item active">{{ t('jobs') }}</li>
               </ol>
             </nav>
           </div>
@@ -38,12 +38,12 @@
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>User</th>
-                      <th>Type</th>
-                      <th>File / URL</th>
-                      <th>Result</th>
-                      <th>Reason</th>
-                      <th>Action</th>
+                      <th>{{ t('user') }}</th>
+                      <th>{{ t('type') }}</th>
+                      <th>{{ t('file_url') }}</th>
+                      <th>{{ t('result') }}</th>
+                      <th>{{ t('reason') }}</th>
+                      <th>{{ t('action') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -62,8 +62,8 @@
                       <td>
                         {% if 'delete_jobs' in user_permissions %}
                         <a href="{{ url_for('admin_delete', doc_type=r.type, doc_id=r.id) }}"
-                           onclick="return confirm('Delete this record?');">
-                          <button class="badge badge-danger badge-pill">Delete</button>
+                           onclick="return confirm('{{ t('delete_record') }}');">
+                          <button class="badge badge-danger badge-pill">{{ t('delete') }}</button>
                         </a>
                         {% endif %}
                       </td>

@@ -25,6 +25,15 @@ nltk.download('wordnet', quiet=True)
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
+TRANSLATIONS = {}
+translations_dir = os.path.join(os.path.dirname(__file__), 'translations')
+if os.path.isdir(translations_dir):
+    for lang_file in os.listdir(translations_dir):
+        if lang_file.endswith('.json'):
+            lang_code = lang_file.replace('.json', '')
+            with open(os.path.join(translations_dir, lang_file), 'r') as f:
+                TRANSLATIONS[lang_code] = json.load(f)
+
 PROJECT_ID = "fake-job-detection-343c3"
 
 FIREBASE_INITIALIZED = False
@@ -122,13 +131,19 @@ def login_required(f):
     return decorated
 
 @app.context_processor
-def inject_admin():
+def inject_globals():
     uid = session.get('user_id')
     perms = get_user_permissions(uid) if uid else []
+    lang = session.get('language', 'en')
+    translations = TRANSLATIONS.get(lang, TRANSLATIONS.get('en', {}))
+    def t(key):
+        return translations.get(key, key)
     return {
         'is_admin': 'super_admin' in perms or len(perms) > 0,
         'user_permissions': perms,
         'permission_names': PERMISSION_NAMES,
+        'current_language': lang,
+        't': t,
     }
 
 @app.route('/')
@@ -146,6 +161,12 @@ def register_page():
 @app.route('/reset-password')
 def reset_password_page():
     return render_template('reset-password.html')
+
+@app.route('/language/<lang>')
+def set_language(lang):
+    if lang in TRANSLATIONS:
+        session['language'] = lang
+    return redirect(request.referrer or '/home')
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -326,24 +347,33 @@ def upload():
         flash("Firebase not configured.", "danger")
         return redirect('/predict')
     if request.method == 'POST':
-        file = request.files.get('pdf')
-        if not file or not file.filename.endswith('.pdf'):
-            flash("Only PDF files are allowed.", "danger")
+        try:
+            file = request.files.get('pdf')
+            if not file or not file.filename.endswith('.pdf'):
+                flash("Only PDF files are allowed.", "danger")
+                return redirect('/predict')
+            os.makedirs('static/uploads', exist_ok=True)
+            path = os.path.join('static/uploads', file.filename)
+            file.save(path)
+            text = extract_text_from_pdf(path)
+            if not text.strip():
+                flash("Could not extract text from the PDF.", "danger")
+                return redirect('/predict')
+            description, qualifications = split_description_qualifications(text)
+            binary_pred, label, reason = predict_job(description, qualifications)
+            db.collection('job_ads').add({
+                'user_id': session['user_id'],
+                'filename': file.filename,
+                'description': text,
+                'result': label,
+                'reason': reason,
+                'created_at': firestore.SERVER_TIMESTAMP
+            })
+            return redirect(url_for('predictPage', result=label, reason=reason))
+        except Exception as e:
+            print(f"UPLOAD ERROR: {e}\n{traceback.format_exc()}")
+            flash(f"Error processing PDF: {str(e)}", "danger")
             return redirect('/predict')
-        path = os.path.join('static/uploads', file.filename)
-        file.save(path)
-        text = extract_text_from_pdf(path)
-        description, qualifications = split_description_qualifications(text)
-        binary_pred, label, reason = predict_job(description, qualifications)
-        db.collection('job_ads').add({
-            'user_id': session['user_id'],
-            'filename': file.filename,
-            'description': text,
-            'result': label,
-            'reason': reason,
-            'created_at': firestore.SERVER_TIMESTAMP
-        })
-        return redirect(url_for('predictPage', result=label, reason=reason))
     result = request.args.get('result')
     reason = request.args.get('reason')
     return render_template('predict.html', result=result, reason=reason)

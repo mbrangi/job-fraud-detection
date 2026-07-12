@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Fake Job Advertisements</title>
+    <title>{{ t('app_name') }}</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}" />
     <link
       rel="stylesheet"
@@ -37,7 +37,7 @@
               class="col-lg-6 d-flex align-items-center justify-content-center"
             >
               <div class="auth-form-transparent text-left p-3">
-                <h4 style="padding: 10px">Fake Job Advertisement Detection</h4>
+                <h4 style="padding: 10px">{{ t('app_subtitle') }}</h4>
                 <h6 class="font-weight-light"></h6>
 
                 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -52,7 +52,7 @@
 
                 <form id="loginForm" class="pt-3">
                   <div class="form-group">
-                    <label for="emailInput">Email / Username</label>
+                    <label for="emailInput">{{ t('email_username') }}</label>
                     <div class="input-group">
                       <div class="input-group-prepend bg-transparent">
                         <span
@@ -72,7 +72,7 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="passwordInput">Password</label>
+                    <label for="passwordInput">{{ t('password') }}</label>
                     <div class="input-group">
                       <div class="input-group-prepend bg-transparent">
                         <span
@@ -93,7 +93,7 @@
                   </div>
                   <div id="loginError" class="alert alert-danger d-none"></div>
                   <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ url_for('reset_password_page') }}" class="auth-link text-black small">Forgot password?</a>
+                    <a href="{{ url_for('reset_password_page') }}" class="auth-link text-black small">{{ t('forgot_password') }}</a>
                   </div>
                   <div class="my-3">
                     <button
@@ -101,13 +101,13 @@
                       type="submit"
                       id="loginBtn"
                     >
-                      LOGIN
+                      {{ t('login') }}
                     </button>
                   </div>
                 </form>
 
                 <a href="{{ url_for('register') }}"
-                  >Don't have an account? Register</a
+                  >{{ t('no_account') }}</a
                 >
               </div>
             </div>
@@ -138,7 +138,7 @@
         const formData = new FormData();
         formData.append('username', input);
         const res = await fetch('{{ url_for("lookup_email") }}', { method: 'POST', body: formData });
-        if (!res.ok) throw new Error('Username not found');
+        if (!res.ok) throw new Error('{{ t("username_not_found") }}');
         const data = await res.json();
         return data.email;
       }
@@ -146,7 +146,7 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         loginBtn.disabled = true;
-        loginBtn.textContent = 'Signing in...';
+        loginBtn.textContent = '{{ t("signing_in") }}';
         loginError.classList.add('d-none');
 
         try {
@@ -174,7 +174,7 @@
           loginError.textContent = error.message;
           loginError.classList.remove('d-none');
           loginBtn.disabled = false;
-          loginBtn.textContent = 'LOGIN';
+          loginBtn.textContent = '{{ t("login") }}';
         }
       });
     </script>

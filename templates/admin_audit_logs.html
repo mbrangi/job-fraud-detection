@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Audit Logs - Admin</title>
+  <title>{{ t('audit_logs') }} - {{ t('admin') }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
@@ -21,11 +21,11 @@
           {% endfor %}{% endif %}{% endwith %}
 
           <div class="page-header">
-            <h3 class="page-title">Audit Logs</h3>
+            <h3 class="page-title">{{ t('audit_logs') }}</h3>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
-                <li class="breadcrumb-item active">Audit Logs</li>
+                <li class="breadcrumb-item"><a href="/admin">{{ t('admin') }}</a></li>
+                <li class="breadcrumb-item active">{{ t('audit_logs') }}</li>
               </ol>
             </nav>
           </div>
@@ -34,7 +34,7 @@
             <div class="card-body">
               <div class="table-responsive">
                 <table id="audit-table" class="table">
-                  <thead><tr><th>Action</th><th>User</th><th>Details</th><th>Timestamp</th></tr></thead>
+                  <thead><tr><th>{{ t('action') }}</th><th>{{ t('user') }}</th><th>{{ t('details') }}</th><th>{{ t('timestamp') }}</th></tr></thead>
                   <tbody>
                     {% for log in logs %}
                     <tr>
@@ -44,7 +44,7 @@
                       <td>{{ log.timestamp }}</td>
                     </tr>
                     {% endfor %}
-                    {% if not logs %}<tr><td colspan="4" class="text-muted">No audit logs yet.</td></tr>{% endif %}
+                    {% if not logs %}<tr><td colspan="4" class="text-muted">{{ t('no_audit_logs_yet') }}</td></tr>{% endif %}
                   </tbody>
                 </table>
               </div>

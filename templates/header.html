@@ -10,7 +10,16 @@
     </a>
   </div>
   <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-    <button class="btn btn-sm btn-link text-white mr-2" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+    <div class="dropdown mr-2">
+      <button class="btn btn-sm btn-link text-white dropdown-toggle" type="button" id="languageDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ t('language') }}">
+        <i class="fa fa-globe"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="languageDropdown">
+        <a class="dropdown-item {{ 'active' if current_language == 'en' else '' }}" href="/language/en">{{ t('english') }}</a>
+        <a class="dropdown-item {{ 'active' if current_language == 'sw' else '' }}" href="/language/sw">{{ t('swahili') }}</a>
+      </div>
+    </div>
+    <button class="btn btn-sm btn-link text-white mr-2" onclick="toggleDarkMode()" title="{{ t('toggle_dark_mode') }}">
       <i id="darkModeIcon" class="fa fa-moon"></i>
     </button>
   </div>
@@ -75,7 +84,7 @@
     <span
       class="text-muted text-center text-sm-left d-block d-sm-inline-block"
     >
-      Hand-crafted & made with
+      {{ t('handcrafted') }}
       <i class="far fa-heart text-danger"></i>
     </span>
   </div>

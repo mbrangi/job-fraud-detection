@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Fake Job Advertisements</title>
+    <title>{{ t('app_name') }}</title>
     <!-- plugins:css -->
     <link
       rel="stylesheet"
@@ -45,14 +45,14 @@
             <div class="page-header">
               <h3 class="page-title">
                 <span class="alert alert-info">
-                  {{ username }}, here is your uploaded job and history
+                  {{ username }}, {{ t('history_subtitle') }}
                 </span>
               </h3>
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                  <li class="breadcrumb-item"><a href="#">{{ t('dashboard') }}</a></li>
                   <li class="breadcrumb-item active" aria-current="page">
-                    History
+                    {{ t('history') }}
                   </li>
                 </ol>
               </nav>
@@ -60,7 +60,7 @@
 
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Data table</h4>
+                <h4 class="card-title">{{ t('data_table') }}</h4>
                 <div class="row">
                   <div class="col-12">
           

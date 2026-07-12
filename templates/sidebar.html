@@ -250,22 +250,22 @@
 
 <div id="sidebar-overlay" onclick="toggleNav()"></div>
 
-<button id="nav-toggle" onclick="toggleNav()" title="Toggle Navigation" aria-label="Toggle navigation menu">
+<button id="nav-toggle" onclick="toggleNav()" title="{{ t('toggle_nav') }}" aria-label="Toggle navigation menu">
   <i class="fas fa-chevron-right"></i>
 </button>
 
 <nav class="sidebar-left" id="sidebar-left">
-  <button class="sidebar-close" onclick="toggleNav()" title="Close menu" aria-label="Close navigation menu">
+  <button class="sidebar-close" onclick="toggleNav()" title="{{ t('close_menu') }}" aria-label="Close navigation menu">
     <i class="fas fa-times"></i>
   </button>
 
   <div class="sidebar-profile">
-    <div class="welcome-label">Welcome</div>
+    <div class="welcome-label">{{ t('welcome') }}</div>
     <div class="username">
       {% if 'username' in session %}
         {{ session['username'] }}
       {% else %}
-        Guest
+        {{ t('guest') }}
       {% endif %}
     </div>
   </div>
@@ -274,26 +274,26 @@
     <li class="nav-item">
       <a class="nav-link" href="/home">
         <i class="fa fa-home menu-icon"></i>
-        <span class="menu-title">Dashboard</span>
+        <span class="menu-title">{{ t('dashboard') }}</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="/profile">
         <i class="fa fa-user menu-icon"></i>
-        <span class="menu-title">My Profile</span>
+        <span class="menu-title">{{ t('my_profile') }}</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link collapsed" data-toggle="collapse" href="#sidebar-layouts" aria-expanded="false" aria-controls="sidebar-layouts">
         <i class="fas fa-columns menu-icon"></i>
-        <span class="menu-title">Prediction Menu</span>
+        <span class="menu-title">{{ t('prediction_menu') }}</span>
         <i class="fas fa-chevron-right menu-arrow"></i>
       </a>
       <div class="collapse" id="sidebar-layouts">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"><a class="nav-link" href="/predict">Validate Job Ads</a></li>
-          <li class="nav-item"><a class="nav-link" href="/bulk-url-check">Bulk URL Check</a></li>
-          <li class="nav-item"><a class="nav-link" href="/history">My Upload History</a></li>
+          <li class="nav-item"><a class="nav-link" href="/predict">{{ t('validate_job_ads') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="/bulk-url-check">{{ t('bulk_url_check') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="/history">{{ t('my_upload_history') }}</a></li>
         </ul>
       </div>
     </li>
@@ -301,18 +301,18 @@
     <li class="nav-item">
       <a class="nav-link collapsed" data-toggle="collapse" href="#sidebar-admin" aria-expanded="false" aria-controls="sidebar-admin">
         <i class="fa fa-shield-alt menu-icon"></i>
-        <span class="menu-title">Admin Panel</span>
+        <span class="menu-title">{{ t('admin_panel') }}</span>
         <i class="fas fa-chevron-right menu-arrow"></i>
       </a>
       <div class="collapse" id="sidebar-admin">
         <ul class="nav flex-column sub-menu">
-          {% if 'view_analytics' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin">Dashboard</a></li>{% endif %}
-          {% if 'view_users' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/users">Users</a></li>{% endif %}
-          {% if 'manage_roles' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/permissions">Permissions</a></li>{% endif %}
-          {% if 'view_jobs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/jobs">Records</a></li>{% endif %}
-          {% if 'manage_settings' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/domains">Domains</a></li>{% endif %}
-          {% if 'view_audit_logs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/audit-logs">Audit Logs</a></li>{% endif %}
-          {% if 'export_data' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/export">Export</a></li>{% endif %}
+          {% if 'view_analytics' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin">{{ t('dashboard') }}</a></li>{% endif %}
+          {% if 'view_users' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/users">{{ t('users') }}</a></li>{% endif %}
+          {% if 'manage_roles' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/permissions">{{ t('permissions') }}</a></li>{% endif %}
+          {% if 'view_jobs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/jobs">{{ t('records') }}</a></li>{% endif %}
+          {% if 'manage_settings' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/domains">{{ t('domains') }}</a></li>{% endif %}
+          {% if 'view_audit_logs' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/audit-logs">{{ t('audit_logs') }}</a></li>{% endif %}
+          {% if 'export_data' in user_permissions %}<li class="nav-item"><a class="nav-link" href="/admin/export">{{ t('export') }}</a></li>{% endif %}
         </ul>
       </div>
     </li>
@@ -320,7 +320,7 @@
     <li class="nav-item nav-logout">
       <a class="nav-link" href="{{ url_for('logout') }}">
         <i class="fa fa-sign-out-alt menu-icon"></i>
-        <span class="menu-title">Logout</span>
+        <span class="menu-title">{{ t('logout') }}</span>
       </a>
     </li>
   </ul>
