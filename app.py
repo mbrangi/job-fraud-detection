@@ -16,7 +16,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.preprocessing.text import one_hot
+from tensorflow.keras.preprocessing.text import hashing_trick
 
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
@@ -45,8 +45,10 @@ try:
 except Exception as e:
     print(f"Firebase init error: {e}")
 
-model = joblib.load(os.path.join(os.path.dirname(__file__), 'text_classification_model.pkl'))
-model = pickle.load(open('model1.pkl', 'rb'))
+bilingual_model_path = os.path.join(os.path.dirname(__file__), 'models', 'bilingual_model.pkl')
+english_model_path = os.path.join(os.path.dirname(__file__), 'model1.pkl')
+model = pickle.load(open(bilingual_model_path, 'rb')) if os.path.exists(bilingual_model_path) else pickle.load(open(english_model_path, 'rb'))
+model_en = pickle.load(open(english_model_path, 'rb'))
 max_len = 40
 voc_size = 5000
 
@@ -489,7 +491,7 @@ def predict_job(description, qualifications):
     corpus = preprocess(combined_text)
     if not corpus.strip():
         return None, "Invalid", "Text is empty after preprocessing."
-    onehot_repr = [one_hot(corpus, voc_size)]
+    onehot_repr = [hashing_trick(corpus, voc_size, hash_function='md5')]
     padded = pad_sequences(onehot_repr, maxlen=max_len, padding='post')
     pred = model.predict(padded)
     binary_pred = int(np.round(pred[0][0]))
