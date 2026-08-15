@@ -1,54 +1,34 @@
-# Python compiled files
 __pycache__/
 *.py[cod]
-*.pyc
-*.pyo
-*.pyd
-
-# Virtual environment
+*$py.class
 venv/
-env/
-.venv/
-ENV/
-
-# Environment variables and secrets
-.env
-.env.local
-.env.production
-
-# Dataset CSV files (too large for GitHub)
-*.csv
-
-# Jupyter notebook checkpoints
 .ipynb_checkpoints/
-*.ipynb
-
-# VS Code settings
+*.ipynb_checkpoints
 .vscode/
 
-# PyCharm settings
-.idea/
-
-# Operating system files
-.DS_Store
-Thumbs.db
-
-# Log files
+# Logs and runtime data
 *.log
-
-# Distribution / packaging
-dist/
-build/
-*.egg-info/
-
-# Firestore service account key (keep this secret!)
-serviceAccountKey.json
-
-# Uploaded PDF files
-static/uploads/*.pdf
-
-# Local SQLite database
 app.db
+*.db
 
-# Generated proposal
-Proposal.pdf
+# Secrets - never commit
+serviceAccountKey.json
+*.key
+.env
+
+# Giant notebooks / datasets (exceed GitHub limits or bloat repo)
+ifm_group_Summary_data.ipynb
+fake_job_postings.csv
+JOB ADVERTISEMENT FRAUD.csv
+Fake Postings.csv
+Untitled.ipynb
+fakenews.ipynb
+final__fyp.ipynb
+final_fyp.ipynb
+Ifm_Group_fyp.ipynb
+real-fake-job-posting-prediction-eda-modeling.ipynb
+
+# Local scratch
+.~lock.*#
+Screenshots/
+demoInputs.txt
