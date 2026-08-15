@@ -54,35 +54,51 @@ class User(UserMixin):
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
-        # Get form data
+        pdf_text = ""
+        # If a PDF file was uploaded, extract its text and prefill the description
+        file = request.files.get('pdf_file')
+        if file and file.filename and allowed_file(file.filename):
+            try:
+                with pdfplumber.open(file) as pdf:
+                    for page in pdf.pages:
+                        page_text = page.extract_text()
+                        if page_text:
+                            pdf_text += page_text + "\n"
+                if not pdf_text.strip():
+                    flash('Could not extract any text from the PDF. Please fill the form manually.')
+                    return render_template('predict.html')
+            except Exception as e:
+                flash(f'Error reading PDF: {str(e)}. Please fill the form manually.')
+                return render_template('predict.html')
+
+        # Get form data (safe getters so unchecked boxes / missing fields don't crash)
         job_post = {
-            "location": request.form['location'],
-            "salary_range": request.form['salary_range'],
-            "company_profile": request.form['company_profile'],
-            "description": request.form['description'],
-            "requirements": request.form['requirements'],
-            "benefits": request.form['benefits'],
-            "telecommuting": int(request.form['telecommuting']),
-            "has_company_logo": int(request.form['has_company_logo']),
-            "has_questions": int(request.form['has_questions']),
-            "employment_type": request.form['employment_type'],
-            "required_experience": request.form['required_experience'],
-            "required_education": request.form['required_education'],
-            "Industry": request.form['Industry'],
-            "Function": request.form['Function']
+            "location": request.form.get('location', ''),
+            "salary_range": request.form.get('salary_range', ''),
+            "company_profile": request.form.get('company_profile', ''),
+            "description": request.form.get('description', '') or pdf_text[:5000],
+            "requirements": request.form.get('requirements', ''),
+            "benefits": request.form.get('benefits', ''),
+            "telecommuting": int(request.form.get('telecommuting', 0) or 0),
+            "has_company_logo": int(request.form.get('has_company_logo', 0) or 0),
+            "has_questions": int(request.form.get('has_questions', 0) or 0),
+            "employment_type": request.form.get('employment_type', 'Full-time'),
+            "required_experience": request.form.get('required_experience', 'Entry level'),
+            "required_education": request.form.get('required_education', "Bachelor's"),
+            "Industry": request.form.get('Industry', ''),
+            "Function": request.form.get('Function', '')
         }
-        
-        # IMPORTANT: the model expects the input in the format it was trained
-        # Maybe you need to convert `job_post` into a pandas DataFrame
+
+        # The model expects a DataFrame with the same columns it was trained on
         import pandas as pd
-        input_data = pd.DataFrame([job_post])  # turn into dataframe with 1 row
-        
+        input_data = pd.DataFrame([job_post])
+
         # Predict
         prediction = model.predict(input_data)[0]
 
         result = 'FAKE' if prediction == 0 else 'REAL'
 
-        return render_template('predict.html', prediction=result, job_post=job_post)
+        return render_template('predict.html', prediction=result, job_post=job_post, pdf_text=pdf_text[:1000])
 
     return render_template('predict.html')
 
@@ -114,54 +130,7 @@ def predict_form():
 @app.route('/upload_pdf', methods=['GET', 'POST'])
 def upload_pdf():
     if request.method == 'POST':
-        if 'pdf_file' not in request.files:
-            flash('No file selected')
-            return redirect(request.url)
-        
-        file = request.files['pdf_file']
-        if file.filename == '':
-            flash('No file selected')
-            return redirect(request.url)
-        
-        if file and allowed_file(file.filename):
-            # Extract text from PDF
-            text_content = ""
-            try:
-                with pdfplumber.open(file) as pdf:
-                    for page in pdf.pages:
-                        page_text = page.extract_text()
-                        if page_text:
-                            text_content += page_text + "\n"
-            except Exception as e:
-                flash(f'Error reading PDF: {str(e)}')
-                return redirect(request.url)
-            
-            # Simple extraction - you can improve this with NLP
-            job_post = {
-                "location": "",
-                "salary_range": "",
-                "company_profile": "",
-                "description": text_content[:5000],  # Limit length
-                "requirements": "",
-                "benefits": "",
-                "telecommuting": 0,
-                "has_company_logo": 0,
-                "has_questions": 0,
-                "employment_type": "Full-time",
-                "required_experience": "Entry level",
-                "required_education": "Bachelor's",
-                "Industry": "",
-                "Function": ""
-            }
-            
-            # Predict using extracted text
-            import pandas as pd
-            input_data = pd.DataFrame([job_post])
-            prediction = model.predict(input_data)[0]
-            result = 'FAKE' if prediction == 0 else 'REAL'
-            
-            return render_template('predict.html', prediction=result, job_post=job_post, pdf_text=text_content[:1000])
-    
+        return redirect(url_for('predict'))
     return render_template('predict.html')
 
 @app.route('/profile')
