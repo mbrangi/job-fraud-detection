@@ -126,10 +126,22 @@
                       </div>
                     </div>
 
-                    <div id="predictionResult" class="mt-4" style="display:none;">
+                    {% if result and reason %}
+                    <div id="predictionResult" class="mt-4">
                       <h4>{{ t('prediction_result') }}</h4>
-                      <div id="predictionAlert" class="alert"></div>
+                      {% if result == 'fake' %}
+                        <div class="alert alert-danger"><strong>&#10008; {{ t('status_label') }}</strong> {{ result|upper }}<br/>
+                      {% elif result == 'suspicious' %}
+                        <div class="alert alert-warning"><strong>&#9888; {{ t('status_label') }}</strong> {{ result|upper }}<br/>
+                      {% else %}
+                        <div class="alert alert-success"><strong>&#10004; {{ t('status_label') }}</strong> {{ result|upper }}<br/>
+                      {% endif %}
+                      {% if rules %}
+                        <strong>{{ t('rule_checks_label') }}</strong> {{ score }} red-flag point(s): {{ rules }}<br/>
+                      {% endif %}
+                      <strong>{{ t('reason_label') }}</strong> {{ reason }}</div>
                     </div>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -166,24 +178,6 @@
     <script src="{{ url_for('static', filename='js/dropify.js') }}"></script>
 
     <script>
-      const params = new URLSearchParams(window.location.search);
-      const result = params.get('result');
-      const reason = params.get('reason');
-      const rules = params.get('rules');
-      const score = params.get('score');
-      if (result && reason) {
-        const div = document.getElementById('predictionResult');
-        const alert = document.getElementById('predictionAlert');
-        div.style.display = 'block';
-        const cls = result === 'fake' ? 'danger' : result === 'suspicious' ? 'warning' : 'success';
-        const icon = result === 'fake' ? '✖' : result === 'suspicious' ? '⚠' : '✓';
-        alert.className = `alert alert-${cls}`;
-        let html = `<strong>${icon} {{ t('status_label') }}</strong> ${result.toUpperCase()}<br/>`;
-        if (rules) html += `<strong>{{ t('rule_checks_label') }}</strong> ${score} red-flag point(s): ${rules}<br/>`;
-        html += `<strong>{{ t('reason_label') }}</strong> ${reason}`;
-        alert.innerHTML = html;
-      }
-
       document.getElementById('urlForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('urlBtn');
@@ -206,15 +200,6 @@
                                 <strong>{{ t('risk_level') }}</strong> ${data.risk_level.toUpperCase()}<br/>
                                 <strong>{{ t('reason_label') }}</strong> ${data.reason}`;
           resultDiv.style.display = 'block';
-
-          const predDiv = document.getElementById('predictionResult');
-          const predAlert = document.getElementById('predictionAlert');
-          predDiv.style.display = 'block';
-          const predCls = data.label === 'fake' ? 'danger' : data.label === 'legit' ? 'success' : 'warning';
-          predAlert.className = `alert alert-${predCls}`;
-          predAlert.innerHTML = `<strong>{{ t('status_label') }}</strong> ${data.label.toUpperCase()}<br/>
-                                 <strong>{{ t('risk_label') }}</strong> ${data.risk_level.toUpperCase()}<br/>
-                                 <strong>{{ t('reason_label') }}</strong> ${data.reason}`;
         } catch (err) {
           alertDiv.className = 'alert alert-danger';
           alertDiv.textContent = '{{ t('validation_failed') }} ' + err.message;

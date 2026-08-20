@@ -250,7 +250,9 @@ def home_page():
 def predictPage():
     result = request.args.get('result')
     reason = request.args.get('reason')
-    return render_template('predict.html', result=result, reason=reason)
+    rules = request.args.get('rules')
+    score = request.args.get('score')
+    return render_template('predict.html', result=result, reason=reason, rules=rules, score=score)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
