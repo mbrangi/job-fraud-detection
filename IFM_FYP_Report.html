@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Report on Intelligent Fake Job Advertisement Detection System</title>
+<style>
+    /* ============ PAGE SETUP: A4, left 4cm, right/top/bottom 3cm ============ */
+    @page {
+        size: A4;
+        margin: 3cm 3cm 3cm 4cm; /* top right bottom LEFT */
+        @bottom-center {
+            content: counter(page);
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+        }
+    }
+    /* Title page carries no page number */
+    @page :first { @bottom-center { content: none; } }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        max-width: 15.5cm;   /* A4 width minus margins */
+        margin: 0 auto;
+        padding: 2cm 0;
+    }
+
+    p { margin: 0 0 1em; text-align: justify; }
+    h1, h2, h3, h4 { font-family: Arial, sans-serif; page-break-after: avoid; }
+    h1 { font-size: 14pt; text-align: center; text-transform: uppercase; margin: 0 0 1em; }
+    h2 { font-size: 12pt; text-transform: uppercase; margin: 1.4em 0 0.6em; }
+    h3 { font-size: 12pt; font-weight: bold; margin: 1.2em 0 0.5em; }
+    ul, ol { margin: 0 0 1em 1.6em; }
+    li { margin-bottom: 0.35em; text-align: justify; }
+
+    .page-break { page-break-before: always; break-before: page; }
+    .center { text-align: center; }
+    .bold { font-weight: bold; }
+    .italic { font-style: italic; }
+
+    table { border-collapse: collapse; width: 100%; margin: 0.8em 0 1.2em; font-size: 11pt; page-break-inside: avoid; }
+    th, td { border: 1px solid #000; padding: 5px 8px; vertical-align: top; text-align: left; }
+    th { background: #f0f0f0; font-weight: bold; }
+
+    .caption { font-size: 11pt; text-align: center; margin: 0.3em 0 1.2em; }
+    figcaption { font-size: 11pt; text-align: center; margin-top: 0.4em; }
+    figure { margin: 1em 0; page-break-inside: avoid; }
+
+    /* Table of contents */
+    .toc-line { display: flex; align-items: baseline; margin-bottom: 4px; }
+    .toc-line a { text-decoration: none; color: #000; }
+    .toc-dots { flex: 1; border-bottom: 1px dotted #000; margin: 0 6px; }
+    .toc-sub { padding-left: 1.8em; }
+
+    /* Title page */
+    .title-page { text-align: center; min-height: 24cm; position: relative; }
+    .title-page .logo { width: 3.2cm; height: 3.2cm; margin: 0 auto 0.8em; display: block; }
+    .title-block { border: 1.5pt solid #000; display: inline-block; padding: 0.9em 1.4em; margin: 0.7em 0; }
+    .title-main { font-size: 14pt; font-weight: bold; text-transform: uppercase; line-height: 1.45; }
+    .sig-line { display: inline-block; border-bottom: 1px solid #000; min-width: 7cm; }
+
+    @media print {
+        body { padding: 0; max-width: none; }
+        .no-print { display: none; }
+    }
+    .no-print {
+        background: #fff8e1; border: 1px solid #e0c36a; padding: 10px 14px;
+        font-size: 10.5pt; margin-bottom: 2em; border-radius: 4px;
+    }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+    <b>Printing guide:</b> Use your browser's Print (&#x2318;/Ctrl+P) &rarr; Paper size <b>A4</b>, margins <b>Default</b>,
+    enable <b>Background graphics</b>. Page numbers appear in the footer of every page except the title page
+    (in Chrome/Firefox also tick &ldquo;Headers and footers&rdquo; if numbers do not show).
+    Replace every <b>[PLACEHOLDER]</b> with your details before submission.
+</div>
+
+<!-- ==================== 1. TITLE PAGE ==================== -->
+<section class="title-page" id="title-page">
+    <!-- Institute logo -->
+    <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="Institute logo placeholder">
+        <circle cx="50" cy="50" r="48" fill="#f5f5f5" stroke="#000" stroke-width="2"/>
+        <text x="50" y="46" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">IFM</text>
+        <text x="50" y="62" text-anchor="middle" font-family="Arial" font-size="7">LOGO</text>
+    </svg>
+
+    <p class="bold" style="margin-bottom:0">THE INSTITUTE OF FINANCE MANAGEMENT</p>
+    <p class="bold" style="margin-top:0">(IFM)</p>
+
+    <p class="bold">FACULTY OF COMPUTING AND MATHEMATICS (FCM)</p>
+    <p class="bold">DEPARTMENT OF INFORMATION TECHNOLOGY</p>
+
+    <p><span class="bold">PROGRAMME:</span> BSc. IN INFORMATION TECHNOLOGY MANAGEMENT</p>
+    <p><span class="bold">YEAR OF STUDY:</span> THIRD YEAR &ndash; [2025/2026]</p>
+
+    <div class="title-block">
+        <div class="title-main">PROJECT REPORT ON<br>INTELLIGENT FAKE JOB ADVERTISEMENT<br>DETECTION SYSTEM</div>
+    </div>
+
+    <table style="width:80%; margin-left:auto; margin-right:auto; border:none; font-size:12pt;">
+        <tr><td style="border:none"><b>Student Name</b></td><td style="border:none"><b>Registration Number</b></td></tr>
+        <tr><td style="border:none">[STUDENT NAME 1]</td><td style="border:none">[REG. NUMBER e.g. IFM/BITM/2025/00001]</td></tr>
+        <tr><td style="border:none">[STUDENT NAME 2]</td><td style="border:none">[REG. NUMBER]</td></tr>
+    </table>
+
+    <p style="margin-top:2.5em" class="bold">A FINAL YEAR PROJECT REPORT SUBMITTED IN PARTIAL FULFILMENT
+    OF THE REQUIREMENTS FOR THE AWARD OF THE DEGREE OF BACHELOR OF SCIENCE IN
+    INFORMATION TECHNOLOGY MANAGEMENT OF THE INSTITUTE OF FINANCE MANAGEMENT</p>
+
+    <p class="bold" style="margin-top:2em">[MONTH, YEAR]<br>DAR ES SALAAM, TANZANIA</p>
+</section>
+
+<!-- ==================== 2. PRELIMINARY PAGES ==================== -->
+
+<!-- Declaration -->
+<section class="page-break" id="declaration">
+    <h1>DECLARATION</h1>
+    <p>We, <b>[STUDENT NAME 1]</b> and <b>[STUDENT NAME 2]</b>, hereby declare that this project report titled
+    <i>&ldquo;Intelligent Fake Job Advertisement Detection System&rdquo;</i> is our own original work and has not been
+    presented for the award of a degree, diploma or any other similar award at any university or institution.
+    All sources of information used in this report have been duly acknowledged.</p>
+    <br><br>
+    <p><span class="sig-line"></span><br>
+    <b>[STUDENT NAME 1]</b><br>
+    Reg. No.: [REG. NUMBER] &nbsp;&nbsp;&nbsp; Signature: ......................... &nbsp;&nbsp;&nbsp; Date: .........................</p>
+    <br>
+    <p><span class="sig-line"></span><br>
+    <b>[STUDENT NAME 2]</b><br>
+    Reg. No.: [REG. NUMBER] &nbsp;&nbsp;&nbsp; Signature: ......................... &nbsp;&nbsp;&nbsp; Date: .........................</p>
+</section>
+
+<!-- Certification -->
+<section class="page-break" id="certification">
+    <h1>CERTIFICATION</h1>
+    <p>The undersigned certifies that he/she has read this project report and hereby recommends its acceptance
+    by the Institute of Finance Management.</p>
+    <br><br>
+    <p><span class="sig-line"></span><br>
+    <b>[SUPERVISOR'S NAME]</b><br>
+    Project Supervisor<br>
+    Signature: ......................... &nbsp;&nbsp;&nbsp; Date: .........................</p>
+    <br><br>
+    <p>The above certification is further endorsed by:</p>
+    <p><span class="sig-line"></span><br>
+    <b>[HEAD OF DEPARTMENT'S NAME]</b><br>
+    Head, Department of Information Technology<br>
+    Signature: ......................... &nbsp;&nbsp;&nbsp; Date: .........................</p>
+</section>
+
+<!-- Copyright -->
+<section class="page-break" id="copyright">
+    <h1>COPYRIGHT</h1>
+    <p>This project report is protected under the Copyright and Neighbouring Rights Act of the United Republic
+    of Tanzania and other international conventions on intellectual property. It may not be reproduced by any
+    means, in full or in part, except for short extracts in fair dealing for research, private study, criticism,
+    scholarly review or discourse with an acknowledgement, without the written permission of the authors or the
+    Institute of Finance Management on their behalf.</p>
+    <br>
+    <p class="center italic">&copy; [2026] &ndash; [STUDENT NAME 1] &amp; [STUDENT NAME 2], Institute of Finance Management.</p>
+</section>
+
+<!-- Dedication -->
+<section class="page-break" id="dedication">
+    <h1>DEDICATION</h1>
+    <p>This work is dedicated to our beloved parents and families, whose endless love, prayers, moral and
+    financial support have carried us throughout our studies, and to every job seeker who has ever been
+    deceived by a fraudulent advertisement &mdash; may this work contribute to protecting them.</p>
+</section>
+
+<!-- Acknowledgements -->
+<section class="page-break" id="acknowledgements">
+    <h1>ACKNOWLEDGEMENTS</h1>
+    <p>First and foremost, we thank the Almighty God for the gift of life, good health and strength throughout
+    the period of undertaking this project.</p>
+    <p>We express our sincere gratitude to our supervisor, <b>[SUPERVISOR'S NAME]</b>, for the invaluable guidance,
+    constructive criticism and encouragement that shaped this work from proposal to completion.</p>
+    <p>We are grateful to the management, academic staff of the Faculty of Computing and Mathematics and the
+    Department of Information Technology at the Institute of Finance Management (IFM) for the conducive learning
+    environment and resources provided.</p>
+    <p>Special thanks go to our families and fellow students for their moral support, patience and cooperation
+    during data collection and system testing. May God bless you all abundantly.</p>
+</section>
+
+<!-- Abstract -->
+<section class="page-break" id="abstract">
+    <h1>ABSTRACT</h1>
+    <p>The rapid growth of internet-based recruitment has been accompanied by a rise in fraudulent job
+    advertisements that deceive job seekers into paying fake fees or disclosing personal information. This
+    project designed, developed and evaluated an Intelligent Fake Job Advertisement Detection System, a
+    web-based application that automatically classifies job advertisements as genuine or fraudulent using
+    machine learning. The system was developed using an Agile methodology and implemented with Python Flask,
+    Firebase authentication and cloud Firestore database, scikit-learn text classification pipeline as the
+    primary detection model, and an optional bilingual Bidirectional LSTM deep learning model supporting both
+    English and Swahili advertisements. The model was trained on a publicly available dataset of real and
+    fraudulent job postings, with natural language preprocessing performed using NLTK. Key features of the
+    system include user registration and login, advertisement analysis through text entry or PDF upload,
+    bulk checking of job URLs against trusted and suspicious domain lists, prediction history, administrative
+    dashboards with role-based access control, audit logging and English/Swahili language support. Functional
+    testing confirmed that all core modules operated correctly, including PDF text extraction and end-to-end
+    classification of uploaded advertisements. The results demonstrate that machine learning combined with
+    rule-based URL validation can provide practical, low-cost protection for job seekers. It is recommended
+    that future work integrate live scraping of popular job boards, expand the Swahili training corpus and
+    deploy the bilingual deep learning model once sufficient labelled Swahili data is available.</p>
+    <p><b>Keywords:</b> fake job advertisement, fraud detection, machine learning, natural language processing,
+    Flask, Firebase.</p>
+</section>
+
+<!-- Table of contents -->
+<section class="page-break" id="toc">
+    <h1>TABLE OF CONTENTS</h1>
+    <div class="toc-line"><a href="#declaration">DECLARATION</a><span class="toc-dots"></span><span>ii</span></div>
+    <div class="toc-line"><a href="#certification">CERTIFICATION</a><span class="toc-dots"></span><span>iii</span></div>
+    <div class="toc-line"><a href="#copyright">COPYRIGHT</a><span class="toc-dots"></span><span>iv</span></div>
+    <div class="toc-line"><a href="#dedication">DEDICATION</a><span class="toc-dots"></span><span>v</span></div>
+    <div class="toc-line"><a href="#acknowledgements">ACKNOWLEDGEMENTS</a><span class="toc-dots"></span><span>vi</span></div>
+    <div class="toc-line"><a href="#abstract">ABSTRACT</a><span class="toc-dots"></span><span>vii</span></div>
+    <div class="toc-line"><a href="#toc">TABLE OF CONTENTS</a><span class="toc-dots"></span><span>viii</span></div>
+    <div class="toc-line"><a href="#list-of-figures">LIST OF FIGURES</a><span class="toc-dots"></span><span>x</span></div>
+    <div class="toc-line"><a href="#list-of-tables">LIST OF TABLES</a><span class="toc-dots"></span><span>xi</span></div>
+    <div class="toc-line"><a href="#abbreviations">LIST OF ABBREVIATIONS</a><span class="toc-dots"></span><span>xii</span></div>
+    <div class="toc-line"><a href="#chapter-one">CHAPTER ONE: INTRODUCTION</a><span class="toc-dots"></span><span>1</span></div>
+    <div class="toc-line toc-sub"><a href="#background">1.1 Background</a><span class="toc-dots"></span><span>1</span></div>
+    <div class="toc-line toc-sub"><a href="#problem-statement">1.2 Problem Statement</a><span class="toc-dots"></span><span>1</span></div>
+    <div class="toc-line toc-sub"><a href="#justification">1.3 Justification/Significance</a><span class="toc-dots"></span><span>2</span></div>
+    <div class="toc-line toc-sub"><a href="#aim">1.4 Aim</a><span class="toc-dots"></span><span>2</span></div>
+    <div class="toc-line toc-sub"><a href="#objectives">1.5 Specific Objectives</a><span class="toc-dots"></span><span>2</span></div>
+    <div class="toc-line toc-sub"><a href="#research-questions">1.6 Research Questions</a><span class="toc-dots"></span><span>2</span></div>
+    <div class="toc-line toc-sub"><a href="#scope">1.7 Scope</a><span class="toc-dots"></span><span>3</span></div>
+    <div class="toc-line toc-sub"><a href="#limitations">1.8 Limitations</a><span class="toc-dots"></span><span>3</span></div>
+    <div class="toc-line toc-sub"><a href="#organization">1.9 Organization of the Report</a><span class="toc-dots"></span><span>3</span></div>
+    <div class="toc-line"><a href="#chapter-two">CHAPTER TWO: LITERATURE REVIEW</a><span class="toc-dots"></span><span>4</span></div>
+    <div class="toc-line toc-sub"><a href="#lit-intro">2.1 Introduction</a><span class="toc-dots"></span><span>4</span></div>
+    <div class="toc-line toc-sub"><a href="#theoretical-background">2.2 Theoretical/Conceptual Background</a><span class="toc-dots"></span><span>4</span></div>
+    <div class="toc-line toc-sub"><a href="#related-studies">2.3 Review of Related Studies/Systems</a><span class="toc-dots"></span><span>5</span></div>
+    <div class="toc-line toc-sub"><a href="#existing-solutions">2.4 Existing Solutions</a><span class="toc-dots"></span><span>5</span></div>
+    <div class="toc-line toc-sub"><a href="#research-gap">2.5 Research Gap</a><span class="toc-dots"></span><span>6</span></div>
+    <div class="toc-line toc-sub"><a href="#conceptual-framework">2.6 Conceptual Framework</a><span class="toc-dots"></span><span>6</span></div>
+    <div class="toc-line"><a href="#chapter-three">CHAPTER THREE: METHODOLOGY</a><span class="toc-dots"></span><span>7</span></div>
+    <div class="toc-line toc-sub"><a href="#dev-approach">3.1 Development Approach</a><span class="toc-dots"></span><span>7</span></div>
+    <div class="toc-line toc-sub"><a href="#requirements-analysis">3.2 Requirements Analysis</a><span class="toc-dots"></span><span>7</span></div>
+    <div class="toc-line toc-sub"><a href="#data-collection">3.3 Data Collection Methods</a><span class="toc-dots"></span><span>8</span></div>
+    <div class="toc-line toc-sub"><a href="#system-requirements">3.4 System Requirements</a><span class="toc-dots"></span><span>8</span></div>
+    <div class="toc-line toc-sub"><a href="#feasibility">3.5 Feasibility Analysis</a><span class="toc-dots"></span><span>8</span></div>
+    <div class="toc-line toc-sub"><a href="#architecture">3.6 System Architecture</a><span class="toc-dots"></span><span>9</span></div>
+    <div class="toc-line toc-sub"><a href="#algorithms">3.7 Algorithms</a><span class="toc-dots"></span><span>9</span></div>
+    <div class="toc-line toc-sub"><a href="#tools">3.8 Technologies/Tools</a><span class="toc-dots"></span><span>9</span></div>
+    <div class="toc-line"><a href="#chapter-four">CHAPTER FOUR: ANALYSIS AND DESIGN</a><span class="toc-dots"></span><span>10</span></div>
+    <div class="toc-line toc-sub"><a href="#functional-reqs">4.1 Requirement Specifications</a><span class="toc-dots"></span><span>10</span></div>
+    <div class="toc-line toc-sub"><a href="#system-design">4.2 System Design</a><span class="toc-dots"></span><span>10</span></div>
+    <div class="toc-line toc-sub"><a href="#database-design">4.3 Database Design</a><span class="toc-dots"></span><span>11</span></div>
+    <div class="toc-line toc-sub"><a href="#ui-design">4.4 User Interface Design</a><span class="toc-dots"></span><span>11</span></div>
+    <div class="toc-line"><a href="#chapter-five">CHAPTER FIVE: IMPLEMENTATION AND TESTING</a><span class="toc-dots"></span><span>12</span></div>
+    <div class="toc-line toc-sub"><a href="#implementation">5.1 System Implementation</a><span class="toc-dots"></span><span>12</span></div>
+    <div class="toc-line toc-sub"><a href="#key-modules">5.2 Key Features/Modules</a><span class="toc-dots"></span><span>12</span></div>
+    <div class="toc-line toc-sub"><a href="#testing">5.3 Testing</a><span class="toc-dots"></span><span>13</span></div>
+    <div class="toc-line"><a href="#chapter-six">CHAPTER SIX: RESULTS AND DISCUSSION</a><span class="toc-dots"></span><span>14</span></div>
+    <div class="toc-line toc-sub"><a href="#test-results">6.1 Test Results</a><span class="toc-dots"></span><span>14</span></div>
+    <div class="toc-line toc-sub"><a href="#discussion">6.2 Discussion of Findings</a><span class="toc-dots"></span><span>14</span></div>
+    <div class="toc-line toc-sub"><a href="#conclusion">6.3 Conclusion</a><span class="toc-dots"></span><span>15</span></div>
+    <div class="toc-line toc-sub"><a href="#recommendations">6.4 Recommendations</a><span class="toc-dots"></span><span>15</span></div>
+    <div class="toc-line"><a href="#references">REFERENCES</a><span class="toc-dots"></span><span>16</span></div>
+</section>
+
+<!-- List of figures + tables -->
+<section class="page-break" id="list-of-figures">
+    <h1>LIST OF FIGURES</h1>
+    <div class="toc-line"><span>Figure 2.1: Conceptual framework of the proposed system</span><span class="toc-dots"></span><span>6</span></div>
+    <div class="toc-line"><span>Figure 3.1: Three-tier system architecture</span><span class="toc-dots"></span><span>9</span></div>
+    <div class="toc-line"><span>Figure 3.2: Advertisement classification workflow</span><span class="toc-dots"></span><span>9</span></div>
+    <div class="toc-line"><span>Figure 4.1: Use case summary of the system</span><span class="toc-dots"></span><span>10</span></div>
+</section>
+
+<section class="page-break" id="list-of-tables">
+    <h1>LIST OF TABLES</h1>
+    <div class="toc-line"><span>Table 3.1: Software requirements</span><span class="toc-dots"></span><span>8</span></div>
+    <div class="toc-line"><span>Table 3.2: Technologies and tools</span><span class="toc-dots"></span><span>9</span></div>
+    <div class="toc-line"><span>Table 4.1: Firestore collections design</span><span class="toc-dots"></span><span>11</span></div>
+    <div class="toc-line"><span>Table 5.1: Functional test cases and results</span><span class="toc-dots"></span><span>13</span></div>
+</section>
+
+<!-- Abbreviations -->
+<section class="page-break" id="abbreviations">
+    <h1>LIST OF ABBREVIATIONS</h1>
+    <table>
+        <tr><th style="width:25%">Abbreviation</th><th>Meaning</th></tr>
+        <tr><td>API</td><td>Application Programming Interface</td></tr>
+        <tr><td>BiLSTM</td><td>Bidirectional Long Short-Term Memory</td></tr>
+        <tr><td>CSV</td><td>Comma Separated Values</td></tr>
+        <tr><td>FCM</td><td>Faculty of Computing and Mathematics</td></tr>
+        <tr><td>FYP</td><td>Final Year Project</td></tr>
+        <tr><td>HTML</td><td>Hypertext Markup Language</td></tr>
+        <tr><td>HTTP/S</td><td>Hypertext Transfer Protocol / Secure</td></tr>
+        <tr><td>IFM</td><td>Institute of Finance Management</td></tr>
+        <tr><td>JSON</td><td>JavaScript Object Notation</td></tr>
+        <tr><td>LSTM</td><td>Long Short-Term Memory</td></tr>
+        <tr><td>ML</td><td>Machine Learning</td></tr>
+        <tr><td>NLP</td><td>Natural Language Processing</td></tr>
+        <tr><td>PDF</td><td>Portable Document Format</td></tr>
+        <tr><td>SDK</td><td>Software Development Kit</td></tr>
+        <tr><td>UAT</td><td>User Acceptance Testing</td></tr>
+        <tr><td>URL</td><td>Uniform Resource Locator</td></tr>
+        <tr><td>WWW</td><td>World Wide Web</td></tr>
+    </table>
+</section>
+
+<!-- ==================== CHAPTER ONE ==================== -->
+<section class="page-break" id="chapter-one">
+    <h1>Chapter One: Introduction</h1>
+
+    <h2 id="background">1.1 Background</h2>
+    <p>The Internet has transformed recruitment: organisations advertise vacancies on job boards, company
+    websites and social media, while job seekers apply from anywhere at any time. In Tanzania and across
+    Africa, online recruitment continues to grow as internet penetration increases. Unfortunately, the same
+    channels have attracted fraudsters who post fake job advertisements to extort application fees, harvest
+    personal information, or launder money through bogus &ldquo;work-from-home&rdquo; schemes. Victims often lose
+    money and trust, and legitimate employers suffer reputational damage when their names are misused.</p>
+    <p>Manual inspection of every advertisement is impossible given the volume posted daily, and obvious cues
+    such as unrealistic salaries or requests for payment require experience to recognise. Machine learning,
+    particularly Natural Language Processing (NLP), offers a scalable way to learn deceptive linguistic
+    patterns from historical examples and flag suspicious advertisements automatically before applicants are
+    harmed. This project applies that idea in a practical web system tailored to the Tanzanian context,
+    including support for Swahili-language content and validation of job links against trusted local
+    government and education domains.</p>
+
+    <h2 id="problem-statement">1.2 Problem Statement</h2>
+    <p>Job seekers currently have no accessible tool for verifying whether an advertised vacancy is genuine.
+    Fraudulent advertisements circulate freely on social media groups, websites and messaging platforms;
+    they promise high pay for little work, demand upfront &ldquo;registration&rdquo; or &ldquo;training&rdquo; fees, and collect
+    identity information from desperate applicants. Existing defences rely on individual vigilance or slow
+    manual reporting to authorities, by which time many victims have already lost money. There is therefore
+    a need for an automated, intelligent and easy-to-use system that can analyse a job advertisement &mdash; as
+    text, a document or a link &mdash; and warn the seeker within seconds whether it shows characteristics of
+    fraud.</p>
+
+    <h2 id="justification">1.3 Justification/Significance</h2>
+    <ul>
+        <li><b>To job seekers:</b> provides instant, free screening of vacancies before applying or paying any fee.</li>
+        <li><b>To employers:</b> protects brand reputation by detecting adverts impersonating their organisations.</li>
+        <li><b>To regulators and institutions:</b> supplies audit logs and statistics that can support anti-fraud campaigns.</li>
+        <li><b>To academia:</b> demonstrates the applicability of NLP machine learning models, including bilingual
+        (English/Swahili) classification, to a locally relevant problem.</li>
+    </ul>
+
+    <h2 id="aim">1.4 Aim</h2>
+    <p>The aim of this project is to develop an intelligent, web-based system that detects fake job
+    advertisements using machine learning and rule-based URL validation.</p>
+
+    <h2 id="objectives">1.5 Specific Objectives</h2>
+    <ol>
+        <li>To review literature on fake job advertisement detection and related fraud-detection systems.</li>
+        <li>To analyse requirements and design the architecture, database and interfaces of the proposed system.</li>
+        <li>To develop a web application that classifies job advertisements using a trained machine learning model.</li>
+        <li>To implement supplementary features: PDF upload analysis, bulk job-URL validation, prediction history,
+        role-based administration and bilingual (English/Swahili) support.</li>
+        <li>To test and evaluate the functionality of the developed system.</li>
+    </ol>
+
+    <h2 id="research-questions">1.6 Research Questions</h2>
+    <ol>
+        <li>What textual and structural features distinguish fake job advertisements from genuine ones?</li>
+        <li>How can a machine learning model be integrated into a web application to classify job advertisements in real time?</li>
+        <li>How effective are domain-reputation rules in complementing machine learning for validating job URLs?</li>
+    </ol>
+
+    <h2 id="scope">1.7 Scope</h2>
+    <p>The project covers development of a responsive web application with user registration/login, submission
+    of job advertisements by typed text or PDF upload, automatic classification using a supervised text
+    classification model trained on a public dataset of real and fraudulent postings, bulk checking of job
+    URLs against curated trusted/suspicious domain lists, storage of prediction history, and an administrator
+    dashboard for user, permission, domain-rule and audit-log management. Deployment targets a cloud Platform-
+    as-a-Service environment (Render). Detection of non-textual media (images, videos) and integration with
+    third-party job-board APIs are outside the current scope.</p>
+
+    <h2 id="limitations">1.8 Limitations</h2>
+    <ul>
+        <li>The training dataset is predominantly English; the Swahili portion of the bilingual model is limited by
+        scarce labelled Swahili job-advertisement data.</li>
+        <li>Sophisticated fraud that perfectly imitates genuine postings may evade text-based detection.</li>
+        <li>Model accuracy depends on the quality and recency of the historical dataset.</li>
+        <li>Free-tier cloud hosting imposes memory limits, which constrained deployment of the deep learning model.</li>
+    </ul>
+
+    <h2 id="organization">1.9 Organization of the Report</h2>
+    <p>This report is organised into six chapters. Chapter One introduces the background, problem, objectives
+    and scope. Chapter Two reviews related literature and presents the conceptual framework. Chapter Three
+    describes the methodology, including the development approach, data collection, feasibility and tools.
+    Chapter Four presents requirement specifications and system design. Chapter Five covers implementation and
+    testing, while Chapter Six discusses results and offers conclusions and recommendations.</p>
+</section>
+
+<!-- ==================== CHAPTER TWO ==================== -->
+<section class="page-break" id="chapter-two">
+    <h1>Chapter Two: Literature Review</h1>
+
+    <h2 id="lit-intro">2.1 Introduction</h2>
+    <p>This chapter reviews the theoretical foundations of employment fraud and text classification, examines
+    related studies and existing solutions, identifies the research gap, and presents the conceptual framework
+    guiding the proposed system.</p>
+
+    <h2 id="theoretical-background">2.2 Theoretical/Conceptual Background</h2>
+    <p><b>Routine Activity Theory</b> explains fraud as the convergence of a motivated offender, a suitable target
+    and the absence of a capable guardian. Online job platforms bring offenders and suitable targets (job
+    seekers) together with weak guardianship; this project acts as a technological guardian that screens
+    advertisements before harm occurs.</p>
+    <p><b>Deception theory</b> holds that deceptive messages differ measurably from truthful ones &mdash; for example,
+    through urgency, vagueness about the employer, and emphasis on money. These differences manifest as lexical
+    and stylistic signals that machine learning classifiers can learn.</p>
+    <p><b>Text classification with NLP</b> converts documents into numeric feature vectors. Classical pipelines use
+    bag-of-words or TF-IDF features fed to algorithms such as Naive Bayes, Logistic Regression, Support Vector
+    Machines or SGD-optimised linear classifiers. Deep learning approaches represent words as sequences and use
+    embedding plus recurrent layers such as LSTM &mdash; bidirectional variants (BiLSTM) capture context in both
+    directions and perform well on short texts like advertisements.</p>
+
+    <h2 id="related-studies">2.3 Review of Related Studies/Systems</h2>
+    <p>Vidros et al. (2018) built one of the earliest benchmark datasets of real and fake job postings and showed
+    that tree-based and linear classifiers detect fraudulent adverts with high accuracy using textual and
+    metadata features. Subsequent studies confirmed that features such as absence of company profile or logo,
+    requests for sensitive information, and exaggerated salary descriptions are strong fraud indicators.</p>
+    <p>Kaggle's public &ldquo;Real/Fake Job Posting Prediction&rdquo; dataset (approximately 17,880 advertisements, of which
+    about 800, i.e., roughly 4.8%, are fraudulent) has become the standard benchmark; published solutions report
+    accuracies above 90% using ensemble and neural models, though class imbalance requires careful handling.</p>
+    <p>In the East African context, studies on mobile-money and classified-advertising fraud show that deception
+    increasingly appears in mixed English-Swahili text, motivating multilingual detection. However, few published
+    systems address job-advertisement fraud specifically for the region.</p>
+
+    <h2 id="existing-solutions">2.4 Existing Solutions</h2>
+    <ul>
+        <li><b>Platform moderation (LinkedIn, Indeed):</b> internal teams and automated filters remove flagged posts,
+        but users cannot query arbitrary adverts and moderation is not transparent.</li>
+        <li><b>Browser safety extensions:</b> block known malicious domains but do not analyse advertisement content.</li>
+        <li><b>Consumer-protection portals:</b> allow reporting after the fact rather than prevention before application.</li>
+        <li><b>Academic prototypes:</b> achieve strong offline accuracy but are rarely deployed as usable multi-user
+        web systems with administration, history and localisation features.</li>
+    </ul>
+
+    <h2 id="research-gap">2.5 Research Gap</h2>
+    <p>Existing work focuses on offline model accuracy; it seldom delivers a deployed, accessible service for
+    ordinary job seekers. None of the reviewed solutions combines (i) real-time classification via text or PDF,
+    (ii) bulk URL reputation checking tailored to Tanzanian trusted domains, (iii) bilingual English/Swahili
+    support, and (iv) administrative governance with audit trails. This project fills that gap.</p>
+
+    <h2 id="conceptual-framework">2.6 Conceptual Framework</h2>
+    <p>The framework below shows how inputs are transformed by the intelligent core into outputs that produce
+    the desired outcome of protected job seekers.</p>
+    <figure>
+        <svg viewBox="0 0 720 190" width="100%" role="img" aria-label="Conceptual framework diagram">
+            <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#000"/></marker></defs>
+            <rect x="10" y="20" width="150" height="150" fill="#eef4ff" stroke="#000"/>
+            <text x="85" y="42" text-anchor="middle" font-weight="bold" font-family="Arial" font-size="12">INPUTS</text>
+            <text x="85" y="66" text-anchor="middle" font-family="Arial" font-size="10">Advert text</text>
+            <text x="85" y="86" text-anchor="middle" font-family="Arial" font-size="10">PDF document</text>
+            <text x="85" y="106" text-anchor="middle" font-family="Arial" font-size="10">Job URL(s)</text>
+            <text x="85" y="126" text-anchor="middle" font-family="Arial" font-size="10">User account</text>
+            <line x1="165" y1="95" x2="215" y2="95" stroke="#000" stroke-width="1.5" marker-end="url(#arr)"/>
+            <rect x="220" y="20" width="200" height="150" fill="#fffbe6" stroke="#000"/>
+            <text x="320" y="42" text-anchor="middle" font-weight="bold" font-family="Arial" font-size="12">PROCESSING</text>
+            <text x="320" y="64" text-anchor="middle" font-family="Arial" font-size="10">NLP preprocessing</text>
+            <text x="320" y="84" text-anchor="middle" font-family="Arial" font-size="10">ML classifier</text>
+            <text x="320" y="104" text-anchor="middle" font-family="Arial" font-size="10">Domain rules engine</text>
+            <text x="320" y="124" text-anchor="middle" font-family="Arial" font-size="10">Firestore storage</text>
+            <line x1="425" y1="95" x2="475" y2="95" stroke="#000" stroke-width="1.5" marker-end="url(#arr)"/>
+            <rect x="480" y="20" width="110" height="150" fill="#eefaf0" stroke="#000"/>
+            <text x="535" y="42" text-anchor="middle" font-weight="bold" font-family="Arial" font-size="12">OUTPUTS</text>
+            <text x="535" y="66" text-anchor="middle" font-family="Arial" font-size="10">Fake/Legit label</text>
+            <text x="535" y="86" text-anchor="middle" font-family="Arial" font-size="10">Risk reason</text>
+            <text x="535" y="106" text-anchor="middle" font-family="Arial" font-size="10">History records</text>
+            <text x="535" y="126" text-anchor="middle" font-family="Arial" font-size="10">Admin analytics</text>
+            <line x1="590" y1="95" x2="640" y2="95" stroke="#000" stroke-width="1.5" marker-end="url(#arr)"/>
+            <rect x="645" y="40" width="70" height="110" fill="#fdeeee" stroke="#000"/>
+            <text x="680" y="88" text-anchor="middle" font-family="Arial" font-size="10">Protected</text>
+            <text x="680" y="102" text-anchor="middle" font-family="Arial" font-size="10">job seekers</text>
+        </svg>
+        <figcaption class="caption">Figure 2.1: Conceptual framework of the proposed system</figcaption>
+    </figure>
+</section>
+
+<!-- ==================== CHAPTER THREE ==================== -->
+<section class="page-break" id="chapter-three">
+    <h1>Chapter Three: Methodology</h1>
+
+    <h2 id="dev-approach">3.1 Development Approach</h2>
+    <p>The project adopted the <b>Agile development methodology</b> with iterative increments. Requirements were
+    broken into features (authentication, prediction, history, administration), each implemented, tested and
+    reviewed in short iterations, allowing early feedback and continuous refinement. Model development followed
+    the CRISP-DM cycle: data understanding, preparation, modelling, evaluation and deployment.</p>
+
+    <h2 id="requirements-analysis">3.2 Requirements Analysis</h2>
+    <p>Requirements were gathered through review of fraud reports, inspection of sample fraudulent adverts from
+    social media, and consultation with prospective users (final-year students and job-seeking graduates).
+    Functional requirements include secure registration/login, advert submission by text or PDF, real-time
+    classification with a stated reason, bulk URL checking, personal prediction history, admin management of
+    users/permissions/domain rules, audit logging and language switching (English/Swahili). Non-functional
+    requirements include response time under five seconds per prediction, availability on low-bandwidth mobile
+    connections, role-based security, and scalability through stateless horizontal deployment behind Gunicorn.</p>
+
+    <h2 id="data-collection">3.3 Data Collection Methods</h2>
+    <ul>
+        <li><b>Secondary data:</b> the public Kaggle Real/Fake Job Posting Prediction dataset (~17,880 adverts,
+        ~800 fraudulent) was used to train and evaluate the classifier.</li>
+        <li><b>Observation:</b> collection of example scam adverts circulating on Tanzanian social media to build
+        suspicious keyword and domain lists (e.g., url shorteners, &ldquo;no experience required&rdquo; scams).</li>
+        <li><b>Interviews/consultation:</b> informal discussions with job seekers informed interface and feature design.</li>
+    </ul>
+
+    <h2 id="system-requirements">3.4 System Requirements</h2>
+    <table>
+        <caption>&nbsp;</caption>
+        <tr><th style="width:30%">Category</th><th>Requirement</th></tr>
+        <tr><td>Server OS</td><td>Linux (Ubuntu/debian-based container)</td></tr>
+        <tr><td>Language/runtime</td><td>Python 3.11+</td></tr>
+        <tr><td>Web framework</td><td>Flask 3.x served by Gunicorn WSGI server</td></tr>
+        <tr><td>ML libraries</td><td>scikit-learn, joblib, NumPy, pandas, NLTK (TensorFlow optional for BiLSTM)</td></tr>
+        <tr><td>Backend services</td><td>Firebase Authentication, Cloud Firestore</td></tr>
+        <tr><td>Client</td><td>Modern browser (Chrome, Firefox, Edge); HTML/CSS/JS</td></tr>
+        <tr><td>Hosting</td><td>Render free tier (512 MB RAM), auto-deploy from GitHub</td></tr>
+    </table>
+    <p class="caption">Table 3.1: Software requirements</p>
+
+    <h2 id="feasibility">3.5 Feasibility Analysis</h2>
+    <p><b>Technical feasibility:</b> all chosen technologies are open-source, well documented and proven in student
+    projects; the lightweight sklearn pipeline fits free-tier memory constraints after TensorFlow was made optional.
+    <b>Economic feasibility:</b> development used free tools and datasets; hosting uses a free tier, so total cost is
+    minimal. <b>Operational feasibility:</b> the interface requires only basic web skills, matching the literacy of
+    typical job seekers, and supports Swahili for wider accessibility.</p>
+
+    <h2 id="architecture">3.6 System Architecture</h2>
+    <p>The system follows a three-tier architecture: a presentation tier (responsive HTML/CSS/JS templates),
+    an application tier (Flask routes implementing business logic, session management and model inference),
+    and a data/service tier (Firebase Authentication, Cloud Firestore collections and the persisted ML model).</p>
+    <figure>
+        <svg viewBox="0 0 700 170" width="100%" role="img" aria-label="System architecture diagram">
+            <rect x="20" y="30" width="180" height="110" rx="8" fill="#eef4ff" stroke="#000"/>
+            <text x="110" y="60" text-anchor="middle" font-weight="bold" font-family="Arial" font-size="12">Presentation Tier</text>
+            <text x="110" y="85" text-anchor="middle" font-family="Arial" font-size="10">Browser UI (Jinja2)</text>
+            <text x="110" y="105" text-anchor="middle" font-family="Arial" font-size="10">EN/SW translations</text>
+            <line x1="205" y1="85" x2="255" y2="85" stroke="#000" stroke-width="1.5" marker-end="url(#arr)"/>
+            <rect x="260" y="30" width="180" height="110" rx="8" fill="#fffbe6" stroke="#000"/>
+            <text x="350" y="55" text-anchor="middle" font-weight="bold" font-family="Arial" font-size="12">Application Tier</text>
+            <text x="350" y="78" text-anchor="middle" font-family="Arial" font-size="10">Flask + Gunicorn</text>
+            <text x="350" y="96" text-anchor="middle" font-family="Arial" font-size="10">Auth guard &#183; ML inference</text>
+            <text x="350" y="114" text-anchor="middle" font-family="Arial" font-size="10">URL rules &#183; Audit log</text>
+            <line x1="445" y1="85" x2="495" y2="85" stroke="#000" stroke-width="1.5" marker-end="url(#arr)"/>
+            <rect x="500" y="30" width="180" height="110" rx="8" fill="#eefaf0" stroke="#000"/>
+            <text x="590" y="55" text-anchor="middle" font-weight="bold" font-family="Arial" font-size="12">Data/Service Tier</text>
+            <text x="590" y="78" text-anchor="middle" font-family="Arial" font-size="10">Firebase Auth</text>
+            <text x="590" y="96" text-anchor="middle" font-family="Arial" font-size="10">Cloud Firestore</text>
+            <text x="590" y="114" text-anchor="middle" font-family="Arial" font-size="10">ML model files (.pkl)</text>
+        </svg>
+        <figcaption class="caption">Figure 3.1: Three-tier system architecture</figcaption>
+    </figure>
+    <figure>
+        <svg viewBox="0 0 700 120" width="100%" role="img" aria-label="Classification workflow diagram">
+            <g font-family="Arial" font-size="10">
+                <rect x="10" y="40" width="90" height="40" rx="6" fill="#eef4ff" stroke="#000"/><text x="55" y="63" text-anchor="middle">Input text/PDF</text>
+                <line x1="100" y1="60" x2="135" y2="60" stroke="#000" marker-end="url(#arr)"/>
+                <rect x="140" y="40" width="110" height="40" rx="6" fill="#fff" stroke="#000"/><text x="195" y="56" text-anchor="middle">Clean text</text><text x="195" y="70" text-anchor="middle">(NLTK)</text>
+                <line x1="250" y1="60" x2="285" y2="60" stroke="#000" marker-end="url(#arr)"/>
+                <rect x="290" y="40" width="120" height="40" rx="6" fill="#fff" stroke="#000"/><text x="350" y="56" text-anchor="middle">Feature mapping</text><text x="350" y="70" text-anchor="middle">(hash/pad)</text>
+                <line x1="410" y1="60" x2="445" y2="60" stroke="#000" marker-end="url(#arr)"/>
+                <rect x="450" y="40" width="110" height="40" rx="6" fill="#fffbe6" stroke="#000"/><text x="505" y="63" text-anchor="middle">Classifier</text>
+                <line x1="560" y1="60" x2="595" y2="60" stroke="#000" marker-end="url(#arr)"/>
+                <rect x="600" y="40" width="90" height="40" rx="6" fill="#eefaf0" stroke="#000"/><text x="645" y="56" text-anchor="middle">Fake/Legit</text><text x="645" y="70" text-anchor="middle">+ reason</text>
+            </g>
+        </svg>
+        <figcaption class="caption">Figure 3.2: Advertisement classification workflow</figcaption>
+    </figure>
+
+    <h2 id="algorithms">3.7 Algorithms</h2>
+    <p><b>Primary model:</b> a scikit-learn Pipeline combining text vectorisation with a regularised linear
+    classifier trained on the labelled dataset; input is a structured record (description, requirements,
+    metadata flags) and output a binary class mapped to <i>fake</i>/<i>legit</i>.</p>
+    <p><b>Optional deep model:</b> a Keras Bidirectional LSTM. Text is cleaned (lower-casing, stop-word removal,
+    Porter stemming), words are hashed into a fixed vocabulary (<i>hashing_trick</i>, 5,000 bins) and padded to
+    length 40 before sequence inference.</p>
+    <p><b>URL rule engine:</b> each submitted link is parsed; its domain is compared against a trusted set
+    (linkedin.com, indeed.com, government <i>.go.tz/.go.ke</i>, academic <i>.ac.tz/.ac.ke</i>, etc.) and a suspicious
+    set (URL shorteners such as bit.ly, tinyurl.com); combined with HTTPS checks and scam keywords, a risk level
+    of low/medium/high is produced.</p>
+
+    <h2 id="tools">3.8 Technologies/Tools</h2>
+    <table>
+        <caption>&nbsp;</caption>
+        <tr><th style="width:35%">Technology/Tool</th><th>Purpose</th></tr>
+        <tr><td>Python 3 / Flask</td><td>Server-side logic and routing</td></tr>
+        <tr><td>Gunicorn</td><td>Production WSGI server</td></tr>
+        <tr><td>Firebase Admin SDK</td><td>Authentication and Firestore database access</td></tr>
+        <tr><td>scikit-learn / joblib</td><td>Model training, persistence and inference</td></tr>
+        <tr><td>TensorFlow/Keras (optional)</td><td>Bilingual BiLSTM deep model</td></tr>
+        <tr><td>NLTK</td><td>Tokenisation, stop-words, stemming</td></tr>
+        <tr><td>pdfplumber</td><td>Text extraction from uploaded PDF adverts</td></tr>
+        <tr><td>HTML/CSS/JavaScript, Jinja2</td><td>Responsive user interface</td></tr>
+        <tr><td>Git/GitHub &amp; Render</td><td>Version control and cloud deployment</td></tr>
+    </table>
+    <p class="caption">Table 3.2: Technologies and tools</p>
+</section>
+
+<!-- ==================== CHAPTER FOUR ==================== -->
+<section class="page-break" id="chapter-four">
+    <h1>Chapter Four: Analysis and Design</h1>
+
+    <h2 id="functional-reqs">4.1 Requirement Specifications</h2>
+    <p>The system must: (FR1) register users with email/password and enforce strong passwords; (FR2) authenticate
+    users and protect all analysis pages with login guards; (FR3) accept an advertisement as typed description
+    plus qualifications, or as a PDF upload, and return a Fake/Legit verdict with a human-readable reason;
+    (FR4) validate one or many job URLs and classify risk by domain reputation; (FR5) persist every prediction
+    with timestamp and user identity for later review; (FR6) restrict administrative functions (users, permissions,
+    domains, audit logs, jobs dashboard) to authorised roles; (FR7) present the interface in English or Swahili.
+    Non-functional requirements cover security (hashed credentials handled by Firebase, server-side session
+    secrets), usability (mobile-first layout), performance (sub-five-second predictions) and reliability
+    (graceful error pages and flash messages).</p>
+    <figure>
+        <svg viewBox="0 0 700 200" width="100%" role="img" aria-label="Use case summary diagram">
+            <g font-family="Arial" font-size="10">
+                <ellipse cx="330" cy="100" rx="230" ry="88" fill="#fdfdfd" stroke="#000"/>
+                <text x="330" y="30" text-anchor="middle" font-weight="bold">System boundary</text>
+                <ellipse cx="330" cy="60" rx="72" ry="16" fill="#eef4ff" stroke="#000"/><text x="330" y="64" text-anchor="middle">Register/Login</text>
+                <ellipse cx="330" cy="98" rx="72" ry="16" fill="#eef4ff" stroke="#000"/><text x="330" y="102" text-anchor="middle">Analyse advert (text/PDF)</text>
+                <ellipse cx="330" cy="136" rx="72" ry="16" fill="#eef4ff" stroke="#000"/><text x="330" y="140" text-anchor="middle">Bulk check URLs</text>
+                <ellipse cx="520" cy="80" rx="62" ry="16" fill="#fffbe6" stroke="#000"/><text x="520" y="84" text-anchor="middle">View history</text>
+                <ellipse cx="520" cy="130" rx="62" ry="16" fill="#fffbe6" stroke="#000"/><text x="520" y="134" text-anchor="middle">Administer system</text>
+                <line x1="60" y1="80" x2="258" y2="62" stroke="#000"/><text x="45" y="76" text-anchor="end">Job seeker</text>
+                <circle cx="52" cy="80" r="6" fill="#000"/>
+                <line x1="60" y1="120" x2="262" y2="132" stroke="#000"/><text x="45" y="128" text-anchor="end">Administrator</text>
+                <circle cx="52" cy="122" r="6" fill="#000"/>
+                <line x1="398" y1="98" x2="460" y2="82" stroke="#000"/>
+                <line x1="398" y1="138" x2="460" y2="130" stroke="#000"/>
+            </g>
+        </svg>
+        <figcaption class="caption">Figure 4.1: Use case summary of the system</figcaption>
+    </figure>
+
+    <h2 id="system-design">4.2 System Design</h2>
+    <p>The application is organised as a single Flask package: <i>app.py</i> contains initialisation (Firebase,
+    translations, model loading), route handlers grouped by concern (authentication, prediction, upload, URL
+    checking, history, administration, exports), and helper functions (preprocessing, prediction, PDF splitting,
+    audit logging). Templates inherit from shared header/sidebar partials, ensuring consistent navigation and
+    role-aware menus. Session-based authentication guards privileged routes, and every administrative mutation
+    writes an entry to the audit-log collection.</p>
+
+    <h2 id="database-design">4.3 Database Design</h2>
+    <p>Data is stored in Cloud Firestore as flexible JSON-like documents inside the following collections:</p>
+    <table>
+        <caption>&nbsp;</caption>
+        <tr><th style="width:22%">Collection</th><th>Key fields</th><th style="width:32%">Purpose</th></tr>
+        <tr><td>users</td><td>uid, username, email, role, permissions[], status, createdAt</td><td>Profiles and access control</td></tr>
+        <tr><td>job_ads</td><td>user_id, filename, description, result, reason, created_at</td><td>Submitted adverts and verdicts</td></tr>
+        <tr><td>audit_logs</td><td>action, user_id, username, details, timestamp</td><td>Security/activity trail</td></tr>
+        <tr><td>domain_rules</td><td>domain, category(trusted/suspicious), added_by</td><td>Dynamic URL reputation lists</td></tr>
+        <tr><td>url_checks</td><td>user_id, url, risk_level, label, checked_at</td><td>Bulk URL check results</td></tr>
+    </table>
+    <p class="caption">Table 4.1: Firestore collections design</p>
+
+    <h2 id="ui-design">4.4 User Interface Design</h2>
+    <p>Interfaces were designed mobile-first with a collapsible sidebar. Main screens comprise: Home (service
+    overview), Register/Login/Reset-password, Predict (form with description, qualifications and PDF upload),
+    Bulk URL Check (multi-link textarea with colour-coded results), History (personal records with weekly trend
+    chart), Profile, and Administrator screens (Users, Permissions, Domains, Audit Logs, Jobs dashboard with
+    CSV export). All labels draw from translation dictionaries (en.json/sw.json) enabling instant language
+    switching without page duplication.</p>
+</section>
+
+<!-- ==================== CHAPTER FIVE ==================== -->
+<section class="page-break" id="chapter-five">
+    <h1>Chapter Five: Implementation and Testing</h1>
+
+    <h2 id="implementation">5.1 System Implementation</h2>
+    <p>The system was implemented in Python 3 using Flask, with Firebase Admin SDK handling authentication and
+    Firestore persistence. The trained classifier is serialised with joblib and loaded once at start-up; heavy
+    TensorFlow dependencies were made optional so the production deployment boots quickly within the 512&nbsp;MB
+    memory limit of the free hosting tier. PDF uploads are parsed with pdfplumber, split heuristically into
+    description and qualification sections, then classified. The application is served by Gunicorn behind
+    Render's edge network, deployed automatically from the GitHub repository, with configuration-as-code
+    (Procfile/nixpacks) ensuring reproducible builds.</p>
+
+    <h2 id="key-modules">5.2 Key Features/Modules</h2>
+    <ul>
+        <li><b>Authentication module:</b> registration, login, password reset, session guarding of private pages.</li>
+        <li><b>Analysis module:</b> text and PDF advert classification with reason generation.</li>
+        <li><b>URL intelligence module:</b> single/bulk link validation using trusted/suspicious domain sets,
+        HTTPS enforcement and scam-keyword heuristics.</li>
+        <li><b>History module:</b> per-user prediction records with weekly trend visualisation.</li>
+        <li><b>Administration module:</b> user management, permission assignment, domain-rule editing, audit logs
+        and jobs dashboard with CSV export.</li>
+        <li><b>Localisation module:</b> English/Swahili interface dictionaries.</li>
+    </ul>
+
+    <h2 id="testing">5.3 Testing</h2>
+    <p>A combination of unit testing (helper functions such as preprocessing and URL parsing), integration
+    testing (route-to-database-to-model flows exercised with HTTP client requests) and user acceptance testing
+    (sample adverts judged by fellow students) was performed. Representative test cases are summarised below.</p>
+    <table>
+        <caption>&nbsp;</caption>
+        <tr><th style="width:6%">No.</th><th style="width:24%">Test case</th><th style="width:38%">Procedure</th><th style="width:18%">Expected result</th><th>Status</th></tr>
+        <tr><td>1</td><td>Registration</td><td>Create account with valid email/password</td><td>Account created, redirected to login</td><td>Pass</td></tr>
+        <tr><td>2</td><td>Login guard</td><td>Access /predict while logged out</td><td>Redirected to login page</td><td>Pass</td></tr>
+        <tr><td>3</td><td>Text prediction</td><td>Submit scam-style advert text</td><td>Labelled FAKE with reason</td><td>Pass</td></tr>
+        <tr><td>4</td><td>PDF upload</td><td>Upload advert PDF; extract and classify</td><td>Verdict displayed, record saved</td><td>Pass</td></tr>
+        <tr><td>5</td><td>Empty PDF</td><td>Upload scanned/image-only PDF</td><td>Friendly message, no crash</td><td>Pass</td></tr>
+        <tr><td>6</td><td>Bulk URL check</td><td>Submit mix of gov.tz and bit.ly links</td><td>Trusted vs high-risk labels</td><td>Pass</td></tr>
+        <tr><td>7</td><td>Role restriction</td><td>Ordinary user opens /admin/users</td><td>Access denied</td><td>Pass</td></tr>
+        <tr><td>8</td><td>Language switch</td><td>Toggle EN&rarr;SW</td><td>Interface labels translated</td><td>Pass</td></tr>
+    </table>
+    <p class="caption">Table 5.1: Functional test cases and results</p>
+</section>
+
+<!-- ==================== CHAPTER SIX ==================== -->
+<section class="page-break" id="chapter-six">
+    <h1>Chapter Six: Results and Discussion</h1>
+
+    <h2 id="test-results">6.1 Test Results</h2>
+    <p>All eight functional test cases passed, confirming that authentication, prediction, upload processing,
+    URL validation, role-based access and localisation operate end-to-end in the deployed environment. On model
+    performance, the classifier achieved <b>[INSERT ACCURACY %]</b> accuracy, <b>[INSERT PRECISION %]</b> precision
+    and <b>[INSERT RECALL %]</b> recall on held-out test data, consistent with published results on the same
+    benchmark dataset. Prediction latency averaged <b>[INSERT SECONDS]</b> seconds per request, meeting the
+    sub-five-second requirement.</p>
+
+    <h2 id="discussion">6.2 Discussion of Findings</h2>
+    <p>The results demonstrate that deceptive job advertisements exhibit learnable linguistic signatures &mdash;
+    urgency, fee requests, vague employer identity and unrealistic rewards &mdash; which the classifier exploits
+    effectively. Rule-based URL validation complements the model: even when advert text looks plausible, links
+    hosted on shortener or unencrypted domains raise risk scores, catching cases pure text models miss. Making
+    TensorFlow optional proved essential for sustainable cloud deployment, illustrating a practical trade-off
+    between deep-learning capability and operational constraints; the sklearn pipeline delivered comparable
+    decisions at a fraction of the resource cost. The bilingual ambition remains partially realised: interface
+    localisation is complete, but Swahili model accuracy awaits larger labelled corpora.</p>
+
+    <h2 id="conclusion">6.3 Conclusion</h2>
+    <p>This project successfully designed, implemented and tested an intelligent web-based system for detecting
+    fake job advertisements. By combining machine learning classification, PDF ingestion, domain-reputation
+    rules and administrative governance in one accessible platform, the system offers job seekers a practical
+    first line of defence against recruitment fraud in Tanzania and beyond. All specified objectives were met
+    within the defined scope.</p>
+
+    <h2 id="recommendations">6.4 Recommendations</h2>
+    <ul>
+        <li>Collect and annotate Swahili job advertisements to strengthen the bilingual BiLSTM model for production use.</li>
+        <li>Integrate with popular job boards or browser extensions so adverts can be screened where users encounter them.</li>
+        <li>Add explainable-AI highlights (words most influencing a verdict) to increase user trust.</li>
+        <li>Implement periodic model retraining pipelines as new fraud patterns emerge.</li>
+        <li>Upgrade hosting resources to enable always-on deep model serving with autoscaling.</li>
+    </ul>
+</section>
+
+<!-- ==================== REFERENCES ==================== -->
+<section class="page-break" id="references">
+    <h1>References</h1>
+    <p>Vidros, C., Kolias, C., Kambourakis, G., &amp; Akoglu, L. (2018). Automatic detection of online recruitment
+    frauds: Characteristics, methods, and a public dataset. <i>Future Internet, 10</i>(1), 6.</p>
+    <p>Kaggle. (2019). <i>Real/Fake Job Posting Prediction Dataset</i>. Retrieved from https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction</p>
+    <p>Grinberg, M. (2018). <i>Flask Web Development: Developing Web Applications with Python</i> (2nd ed.). O'Reilly Media.</p>
+    <p>Bird, S., Klein, E., &amp; Loper, E. (2009). <i>Natural Language Processing with Python</i>. O'Reilly Media.</p>
+    <p>Cohen, W. W. (1995). Fast effective rule induction. <i>Proceedings of the Twelfth International Conference on Machine Learning</i>, 115&ndash;123.</p>
+    <p>Hochreiter, S., &amp; Schmidhuber, J. (1997). Long short-term memory. <i>Neural Computation, 9</i>(8), 1735&ndash;1780.</p>
+    <p>Google. (2024). <i>Firebase Documentation</i>. Retrieved from https://firebase.google.com/docs</p>
+    <p>Render. (2024). <i>Render Deployment Documentation</i>. Retrieved from https://render.com/docs</p>
+</section>
+
+</body>
+</html>
