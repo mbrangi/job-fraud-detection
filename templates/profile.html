@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>{{ t('my_profile') }} - {{ t('app_name') }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/iconfonts/font-awesome/css/all.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendors/css/vendor.bundle.addons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container-scroller">
+    {% include 'header.html' %}
+    <div class="container-fluid page-body-wrapper">
+      {% include 'sidebar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}</div>
+          {% endfor %}{% endif %}{% endwith %}
+
+          <div class="page-header">
+            <h3 class="page-title">{{ t('my_profile') }}</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/home">{{ t('dashboard') }}</a></li>
+                <li class="breadcrumb-item active">{{ t('profile') }}</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">{{ t('account_details') }}</h4>
+                  <p><strong>{{ t('email') }}:</strong> {{ email }}</p>
+                  <p><strong>{{ t('username') }}:</strong> {{ user_username }}</p>
+                  <p><strong>{{ t('full_name') }}:</strong> {{ fullname }}</p>
+                  <p><strong>{{ t('registered') }}:</strong> {{ created_at }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">{{ t('edit_username') }}</h4>
+                  <form method="POST">
+                    <div class="form-group">
+                      <label>{{ t('new_username') }}</label>
+                      <input type="text" class="form-control" name="username" value="{{ user_username }}" minlength="3" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ t('save') }}</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">{{ t('api_key') }}</h4>
+                  <p>{{ t('api_key_instructions') }}</p>
+                  <form method="POST" action="{{ url_for('generate_api_key') }}">
+                    <button type="submit" class="btn btn-outline-warning">{{ t('generate_new_api_key') }}</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">{{ t('download_my_data') }}</h4>
+                  <p>{{ t('export_instructions') }}</p>
+                  <a href="{{ url_for('export_my_data') }}" class="btn btn-outline-success">{{ t('download_csv') }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
+</body>
+</html>
