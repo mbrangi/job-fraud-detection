@@ -141,6 +141,53 @@
                       {% endif %}
                       <strong>{{ t('reason_label') }}</strong> {{ reason }}</div>
                     </div>
+
+                    <!-- Result popup window -->
+                    <div class="modal fade" id="predictionModal" tabindex="-1" role="dialog" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header {% if result == 'fake' %}bg-danger{% elif result == 'suspicious' %}bg-warning{% else %}bg-success{% endif %} text-white">
+                            <h5 class="modal-title">{{ t('prediction_result') }}</h5>
+                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
+                          </div>
+                          <div class="modal-body text-center">
+                            <div style="font-size:3em;">
+                              {% if result == 'fake' %}&#10008;{% elif result == 'suspicious' %}&#9888;{% else %}&#10004;{% endif %}
+                            </div>
+                            <h2 class="{% if result == 'fake' %}text-danger{% elif result == 'suspicious' %}text-warning{% else %}text-success{% endif %}">
+                              {{ result|upper }}
+                            </h2>
+                            {% if rules %}
+                              <p><strong>{{ t('rule_checks_label') }}</strong> {{ score }} red-flag point(s)</p>
+                              <p class="text-left">{{ rules }}</p>
+                            {% endif %}
+                            <p class="text-left"><strong>{{ t('reason_label') }}</strong> {{ reason }}</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">OK</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <script>
+                      window.addEventListener('load', function () {
+                        var m = document.getElementById('predictionModal');
+                        if (!m) return;
+                        if (window.jQuery && window.jQuery.fn && window.jQuery.fn.modal) {
+                          window.jQuery(m).modal('show');
+                        } else {
+                          m.classList.add('show');
+                          m.style.display = 'block';
+                          document.body.classList.add('modal-open');
+                          var b = document.createElement('div');
+                          b.className = 'modal-backdrop fade show';
+                          document.body.appendChild(b);
+                        }
+                        if (window.history && window.history.replaceState) {
+                          window.history.replaceState({}, document.title, window.location.pathname);
+                        }
+                      });
+                    </script>
                     {% endif %}
                   </div>
                 </div>
