@@ -151,5 +151,13 @@
   "data_table": "Jedwali la Data",
   "admin": "Usimamizi",
   "actions": "Vitendo",
-  "jobs": "Ajira"
+  "jobs": "Ajira",
+  "analyze_advert_text": "Chambua Maandishi ya Tangazo",
+  "analyze_advert_hint": "Weka au andika tangazo la kazi hapa chini. Mfumo utalifanyia uchunguzi wa kanuni za utapeli na modeli ya ujifunzaji mashine.",
+  "advert_text": "Maandishi ya tangazo",
+  "advert_text_placeholder": "mf. HARAKA! Pata Tsh 500,000 kwa wiki ukifanya kazi nyumbani. Hakuna uzoefu unaohitajika. Tuma ada ya usajili Tsh 20,000 kwa M-Pesa 0712345678...",
+  "qualifications_optional": "Vigezo / mahitaji (si lazima)",
+  "qualifications_placeholder": "Weka vigezo au mahitaji ya kazi hapa (si lazima)",
+  "verify_advert": "Hakiki Tangazo",
+  "rule_checks_label": "Uchunguzi wa kanuni:"
 }

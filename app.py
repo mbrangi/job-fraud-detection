@@ -402,6 +402,42 @@ def upload():
     reason = request.args.get('reason')
     return render_template('predict.html', result=result, reason=reason)
 
+@app.route('/analyze_text', methods=['POST'])
+@login_required
+def analyze_text():
+    description = request.form.get('description', '').strip()
+    qualifications = request.form.get('qualifications', '').strip()
+    if not description and not qualifications:
+        flash("Please enter the advertisement text to verify.", "warning")
+        return redirect('/predict')
+    full_text = (description + "\n" + qualifications).strip()
+
+    rule_score, triggered = rule_based_check(full_text)
+    try:
+        binary_pred, ml_label, _ = predict_job(description, qualifications)
+    except Exception as e:
+        print(f"ANALYZE TEXT ML ERROR: {e}\n{traceback.format_exc()}")
+        binary_pred, ml_label = None, None
+    label, reason = combine_verdicts(binary_pred, ml_label, rule_score, triggered)
+
+    if db:
+        try:
+            db.collection('job_ads').add({
+                'user_id': session['user_id'],
+                'filename': 'manual-text',
+                'description': full_text[:5000],
+                'result': label,
+                'reason': reason,
+                'rule_score': rule_score,
+                'created_at': firestore.SERVER_TIMESTAMP
+            })
+        except Exception as e:
+            print(f"Analyze text save error: {e}")
+    audit_log('text_analysis', session['user_id'], f"score={rule_score} verdict={label}")
+
+    return redirect(url_for('predictPage', result=label, reason=reason,
+                            rules='; '.join(triggered), score=str(rule_score)))
+
 @app.route('/history')
 @login_required
 def history():
@@ -563,6 +599,79 @@ def predict_job(description, qualifications):
     label = 'fake' if binary_pred == 1 else 'legit'
     reason = "Missing contact info or unrealistic content" if binary_pred == 1 else "Passed normality checks"
     return binary_pred, label, reason
+
+# ---------------- Rule-based verification engine ----------------
+FRAUD_RULES = [
+    {'id': 'upfront_payment', 'label': 'Upfront payment/fee requested', 'weight': 3,
+     'patterns': [r'registration fee', r'entry fee', r'joining fee', r'training fee',
+                  r'processing fee', r'application fee', r'insurance fee', r'uniform fee',
+                  r'pay\s+(?:us|a|the|via|through)', r'make\s+a?\s*payment', r'\bdeposit\b',
+                  r'm[-\s]?pesa', r'mobile money', r'tigo ?pesa', r'airtel money', r'halopesa']},
+    {'id': 'sensitive_info', 'label': 'Requests sensitive personal information', 'weight': 3,
+     'patterns': [r'send (?:your )?(?:id|passport|bank|pin|tin|otp)', r'bank (?:account|details)',
+                  r'national identifier?', r'scan of your id', r'pin code']},
+    {'id': 'too_good', 'label': 'Too-good-to-be-true promises', 'weight': 2,
+     'patterns': [r'no experience (?:needed|required)', r'work from home', r'work at home',
+                  r'earn (?:money|income|cash|up to)', r'easy money', r'guaranteed income',
+                  r'get rich', r'daily payment', r'instant (?:money|hiring|income)',
+                  r'\d{4,}\s*(?:per|a|/) ?(?:day|week)']},
+    {'id': 'urgency', 'label': 'Urgency/pressure tactics', 'weight': 1,
+     'patterns': [r'\burgent(ly)?\b', r'immediately', r'\bhurry\b', r'limited (?:slots|positions|spaces?)',
+                  r'apply now', r'\basap\b', r'closing soon', r'within 24 hours', r'first \d+ applicants']},
+    {'id': 'personal_contact', 'label': 'Personal/unofficial contact channel only', 'weight': 2,
+     'patterns': [r'whats\s?app', r'telegram', r'sms only', r'call or text', r'\bdm\b',
+                  r'inbox (?:me|us)', r'\b0[67]\d{8}\b']},
+    {'id': 'vague_employer', 'label': 'Vague or anonymous employer identity', 'weight': 1,
+     'patterns': [r'(?:international|global|renowned|reputable) company', r'our client',
+                  r'a certain company', r'an organization', r'company profile:?\s*$']},
+]
+
+LEGIT_SIGNALS = [
+    r'https?://(www\.)?[a-z0-9-]+\.(go\.tz|go\.ke|ac\.tz|ac\.ke|or\.tz|or\.ke)\b',
+    r'\b(www\.)[a-z0-9-]+\.[a-z]{2,}',
+    r'\b(plot|block|street|road|floor|suite|building)\b',
+    r'\b(dar es salaam|dodoma|mwanza|arusha|mbeya|nairobi)\b',
+    r'\b(tin|vrn|business licence|license number)\b',
+]
+
+def rule_based_check(text):
+    lowered = (text or '').lower()
+    score = 0
+    triggered = []
+    for rule in FRAUD_RULES:
+        for pat in rule['patterns']:
+            if re.search(pat, lowered):
+                score += rule['weight']
+                triggered.append(rule['label'])
+                break
+    legit_hits = sum(1 for pat in LEGIT_SIGNALS if re.search(pat, lowered))
+    score = max(0, score - min(2, legit_hits))
+    return score, triggered
+
+def combine_verdicts(binary_pred, ml_label, rule_score, triggered):
+    """Fuse ML prediction with rule-engine score into a final verdict."""
+    rules_fake = rule_score >= 5
+    rules_suspicious = 3 <= rule_score < 5
+    if binary_pred is None:
+        label = 'fake' if rules_fake else ('suspicious' if rules_suspicious else 'legit')
+    else:
+        if rules_fake or (ml_label == 'fake' and rule_score >= 3):
+            label = 'fake'
+        elif ml_label == 'fake' or rules_suspicious:
+            label = 'suspicious'
+        else:
+            label = 'legit'
+    parts = []
+    if triggered:
+        parts.append("Rule checks flagged %d red-flag point(s): %s" % (rule_score, '; '.join(triggered)))
+    else:
+        parts.append("Rule checks found no red flags (score %d)" % rule_score)
+    if binary_pred is None:
+        parts.append("ML model not consulted")
+    else:
+        parts.append("ML model verdict: %s" % ml_label.upper())
+    reason = ". ".join(parts)
+    return label, reason
 
 TRUSTED_DOMAINS = {
     'linkedin.com', 'indeed.com', 'glassdoor.com', 'monster.com', 'careerbuilder.com',

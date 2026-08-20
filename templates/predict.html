@@ -69,6 +69,29 @@
                     </div>
                     {% endfor %} {% endif %} {% endwith %}
 
+                    <!-- Manual text analysis -->
+                    <div class="card mb-4">
+                      <div class="card-body">
+                        <h4 class="card-title">{{ t('analyze_advert_text') }}</h4>
+                        <p class="card-description">{{ t('analyze_advert_hint') }}</p>
+                        <form method="POST" action="{{ url_for('analyze_text') }}">
+                          <div class="form-group">
+                            <label for="adDescription">{{ t('advert_text') }}</label>
+                            <textarea class="form-control" id="adDescription" name="description" rows="6"
+                              placeholder="{{ t('advert_text_placeholder') }}" required></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="adQualifications">{{ t('qualifications_optional') }}</label>
+                            <textarea class="form-control" id="adQualifications" name="qualifications" rows="3"
+                              placeholder="{{ t('qualifications_placeholder') }}"></textarea>
+                          </div>
+                          <div align="center" class="mt-3">
+                            <button type="submit" class="btn btn-outline-success btn-fw">{{ t('verify_advert') }}</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
                     <div class="row">
                       <div class="col-md-6">
                         <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
@@ -146,13 +169,19 @@
       const params = new URLSearchParams(window.location.search);
       const result = params.get('result');
       const reason = params.get('reason');
+      const rules = params.get('rules');
+      const score = params.get('score');
       if (result && reason) {
         const div = document.getElementById('predictionResult');
         const alert = document.getElementById('predictionAlert');
         div.style.display = 'block';
-        const cls = result === 'fake' ? 'danger' : 'success';
+        const cls = result === 'fake' ? 'danger' : result === 'suspicious' ? 'warning' : 'success';
+        const icon = result === 'fake' ? '✖' : result === 'suspicious' ? '⚠' : '✓';
         alert.className = `alert alert-${cls}`;
-        alert.innerHTML = `<strong>{{ t('status_label') }}</strong> ${result.toUpperCase()}<br/><strong>{{ t('reason_label') }}</strong> ${reason}`;
+        let html = `<strong>${icon} {{ t('status_label') }}</strong> ${result.toUpperCase()}<br/>`;
+        if (rules) html += `<strong>{{ t('rule_checks_label') }}</strong> ${score} red-flag point(s): ${rules}<br/>`;
+        html += `<strong>{{ t('reason_label') }}</strong> ${reason}`;
+        alert.innerHTML = html;
       }
 
       document.getElementById('urlForm').addEventListener('submit', async (e) => {
@@ -200,4 +229,4 @@
   </body>
 
   <!-- Mirrored from www.urbanui.com/melody/template/pages/forms/basic_elements.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Sep 2018 06:07:34 GMT -->
-</htm
+</html>
