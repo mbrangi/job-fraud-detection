@@ -15,8 +15,17 @@ import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.preprocessing.text import hashing_trick
+import hashlib
+
+def hashing_trick(text, n, hash_function='md5'):
+    return [int(hashlib.md5(w.encode('utf-8')).hexdigest(), 16) % (n - 1) + 1 for w in text.split()]
+
+def pad_sequences(sequences, maxlen, padding='post', value=0):
+    padded = []
+    for seq in sequences:
+        seq = list(seq)[:maxlen]
+        padded.append(seq + [value] * (maxlen - len(seq)))
+    return np.array(padded)
 
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
@@ -56,10 +65,25 @@ except Exception as e:
 
 bilingual_model_path = os.path.join(os.path.dirname(__file__), 'models', 'bilingual_model.pkl')
 english_model_path = os.path.join(os.path.dirname(__file__), 'model1.pkl')
-model = pickle.load(open(bilingual_model_path, 'rb')) if os.path.exists(bilingual_model_path) else pickle.load(open(english_model_path, 'rb'))
-model_en = pickle.load(open(english_model_path, 'rb'))
+sklearn_model_path = os.path.join(os.path.dirname(__file__), 'text_classification_model.pkl')
 max_len = 40
 voc_size = 5000
+
+model = None
+model_type = None
+try:
+    model = joblib.load(sklearn_model_path)
+    model_type = 'sklearn'
+    print("Loaded sklearn text classification model (fast startup, low memory)")
+except Exception as e:
+    print(f"Sklearn model load failed ({e}); trying Keras models...")
+    try:
+        import tensorflow  # optional heavy dependency (~600MB)
+        model = pickle.load(open(bilingual_model_path, 'rb')) if os.path.exists(bilingual_model_path) else pickle.load(open(english_model_path, 'rb'))
+        model_type = 'keras'
+        print("Loaded Keras model")
+    except Exception as e2:
+        print(f"Model load error: {e2}")
 
 def verify_firebase_token(id_token):
     try:
@@ -521,10 +545,21 @@ def predict_job(description, qualifications):
     corpus = preprocess(combined_text)
     if not corpus.strip():
         return None, "Invalid", "Text is empty after preprocessing."
-    onehot_repr = [hashing_trick(corpus, voc_size, hash_function='md5')]
-    padded = pad_sequences(onehot_repr, maxlen=max_len, padding='post')
-    pred = model.predict(padded)
-    binary_pred = int(np.round(pred[0][0]))
+    if model_type == 'sklearn':
+        input_data = pd.DataFrame([{
+            'location': '', 'salary_range': '', 'company_profile': '',
+            'description': combined_text, 'requirements': qualifications or '',
+            'benefits': '', 'telecommuting': 0, 'has_company_logo': 0,
+            'has_questions': 0, 'employment_type': '', 'required_experience': '',
+            'required_education': '', 'Industry': '', 'Function': ''
+        }])
+        pred = int(model.predict(input_data)[0])
+        binary_pred = 1 if pred == 0 else 0
+    else:
+        onehot_repr = [hashing_trick(corpus, voc_size, hash_function='md5')]
+        padded = pad_sequences(onehot_repr, maxlen=max_len, padding='post')
+        pred = model.predict(padded)
+        binary_pred = int(np.round(pred[0][0]))
     label = 'fake' if binary_pred == 1 else 'legit'
     reason = "Missing contact info or unrealistic content" if binary_pred == 1 else "Passed normality checks"
     return binary_pred, label, reason
