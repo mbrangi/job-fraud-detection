@@ -215,9 +215,30 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+    <!-- URL check result popup -->
+    <div class="modal fade" id="urlModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header" id="urlModalHeader">
+            <h5 class="modal-title">{{ t('validate_job_url') }}</h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body text-center">
+            <div id="urlModalIcon" style="font-size:3em;"></div>
+            <h2 id="urlModalVerdict"></h2>
+            <p><strong>{{ t('risk_level') }}</strong> <span id="urlModalRisk"></span></p>
+            <p><strong>{{ t('trusted_label') }}</strong> <span id="urlModalTrusted"></span></p>
+            <p class="text-left"><strong>{{ t('reason_label') }}</strong> <span id="urlModalReason"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- plugins:js -->
-    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.base.js') }}"></script>    <script src="{{ url_for('static', filename='vendors/js/vendor.bundle.addons.js') }}"></script>
     <script src="{{ url_for('static', filename='js/hoverable-collapse.js') }}"></script>
     <script src="{{ url_for('static', filename='js/misc.js') }}"></script>
     <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
@@ -225,6 +246,50 @@
     <script src="{{ url_for('static', filename='js/dropify.js') }}"></script>
 
     <script>
+      function showUrlModal(data) {
+        var m = document.getElementById('urlModal');
+        var header = document.getElementById('urlModalHeader');
+        var iconEl = document.getElementById('urlModalIcon');
+        var verdictEl = document.getElementById('urlModalVerdict');
+        var riskEl = document.getElementById('urlModalRisk');
+        var trustedEl = document.getElementById('urlModalTrusted');
+        var reasonEl = document.getElementById('urlModalReason');
+
+        var isFake = data.label === 'fake';
+        var isLegit = data.label === 'legit' || (data.trusted && !isFake);
+        if (isFake) {
+          header.className = 'modal-header bg-danger text-white';
+          iconEl.innerHTML = '&#10008;';
+          iconEl.className = 'text-danger';
+          verdictEl.textContent = '{{ t("fake_label") }}';
+          verdictEl.className = 'text-danger';
+        } else if (isLegit) {
+          header.className = 'modal-header bg-success text-white';
+          iconEl.innerHTML = '&#10004;';
+          iconEl.className = 'text-success';
+          verdictEl.textContent = '{{ t("legit_label") }}';
+          verdictEl.className = 'text-success';
+        } else {
+          header.className = 'modal-header bg-warning text-white';
+          iconEl.innerHTML = '&#9888;';
+          iconEl.className = 'text-warning';
+          verdictEl.textContent = data.label ? data.label.toUpperCase() : 'SUSPICIOUS';
+          verdictEl.className = 'text-warning';
+        }
+        riskEl.textContent = (data.risk_level || '').toUpperCase();
+        trustedEl.textContent = data.trusted ? 'YES' : 'NO';
+        reasonEl.textContent = data.reason || '';
+        if (window.jQuery && window.jQuery.fn && window.jQuery.fn.modal) {
+          window.jQuery(m).modal('show');
+        } else {
+          m.classList.add('show'); m.style.display = 'block';
+          document.body.classList.add('modal-open');
+          var b = document.createElement('div');
+          b.className = 'modal-backdrop fade show';
+          document.body.appendChild(b);
+        }
+      }
+
       document.getElementById('urlForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('urlBtn');
@@ -247,6 +312,7 @@
                                 <strong>{{ t('risk_level') }}</strong> ${data.risk_level.toUpperCase()}<br/>
                                 <strong>{{ t('reason_label') }}</strong> ${data.reason}`;
           resultDiv.style.display = 'block';
+          showUrlModal(data);
         } catch (err) {
           alertDiv.className = 'alert alert-danger';
           alertDiv.textContent = '{{ t('validation_failed') }} ' + err.message;

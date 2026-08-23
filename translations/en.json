@@ -159,5 +159,7 @@
   "qualifications_optional": "Qualifications / requirements (optional)",
   "qualifications_placeholder": "Paste the qualifications or requirements section here (optional)",
   "verify_advert": "Verify Advertisement",
-  "rule_checks_label": "Rule checks:"
+  "rule_checks_label": "Rule checks:",
+  "fake_label": "FAKE JOB",
+  "legit_label": "LEGITIMATE JOB"
 }
